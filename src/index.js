@@ -6,6 +6,9 @@ const authRoutes = require('./routes/authRoutes');
 const testRoutes = require('./routes/testRoutes');
 const citasRoutes = require('./routes/citasRoutes');
 const sosRoutes = require('./routes/sosRoutes');
+const psicologoRoutes = require('./routes/psicologoRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const recursosRoutes = require('./routes/recursosRoutes');
 
 const app = express();
 
@@ -17,6 +20,9 @@ app.use('/auth', authRoutes);
 app.use('/test', testRoutes);
 app.use('/citas', citasRoutes);
 app.use('/sos', sosRoutes);
+app.use('/psicologo', psicologoRoutes);
+app.use('/admin', adminRoutes);
+app.use('/recursos', recursosRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
