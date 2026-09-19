@@ -53,27 +53,27 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Aquí está la clave de "una sola app": según el rol que devolvió
-  // el backend, navegamos a una pantalla distinta.
   void _navegarSegunRol(Map<String, dynamic> usuario) {
     if (!mounted) return;
 
     final rol = usuario['rol'];
+    final id = usuario['id'] is int ? usuario['id'] : int.parse(usuario['id'].toString());
 
     if (rol == 'estudiante') {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => HomeEstudiante(
+            estudianteId: id,
             nombreEstudiante: usuario['nombre'],
             programaAcademico: usuario['programa_academico'],
           ),
         ),
       );
     } else {
-      // 'bienestar' o 'admin'
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => HomeStaff(
+            usuarioId: id,
             nombreUsuario: usuario['nombre'],
             rol: rol,
           ),

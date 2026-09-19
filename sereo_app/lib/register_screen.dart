@@ -61,9 +61,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
 
       final usuario = datos['usuario'];
+      final id = usuario['id'] is int ? usuario['id'] : int.parse(usuario['id'].toString());
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => HomeEstudiante(
+            estudianteId: id,
             nombreEstudiante: usuario['nombre'],
             programaAcademico: usuario['programa_academico'],
           ),
