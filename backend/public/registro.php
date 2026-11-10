@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+require_once __DIR__ . '/../lib/password_policy.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -32,49 +35,45 @@ $contrasena = $datos['contrasena'] ?? '';
 $confirmarContrasena = $datos['confirmar_contrasena'] ?? '';
 $programa = trim($datos['programa_academico'] ?? '');
 
-// 1. Campos obligatorios
 if (!$nombre || !$correo || !$contrasena || !$confirmarContrasena || !$programa) {
     http_response_code(400);
     echo json_encode(['error' => 'Todos los campos son obligatorios.']);
     exit;
 }
 
-// 2. Dominio institucional
 if (!str_ends_with($correo, '@ucundinamarca.edu.co')) {
     http_response_code(403);
     echo json_encode(['error' => 'Debes registrarte con tu correo institucional (@ucundinamarca.edu.co).']);
     exit;
 }
 
-// 3. Confirmación de contraseña
 if ($contrasena !== $confirmarContrasena) {
     http_response_code(400);
     echo json_encode(['error' => 'Las contraseñas no coinciden.']);
     exit;
 }
 
-// 4. Contraseña mínima (regla simple, se puede endurecer después)
-if (strlen($contrasena) < 8) {
-    http_response_code(400);
-    echo json_encode(['error' => 'La contraseña debe tener al menos 8 caracteres.']);
-    exit;
+$fallos = validarPoliticaContrasena($contrasena, $correo, $nombre);
+if ($fallos) {
+    registrarLog($pdo, 'REGISTRO_FALLIDO', 'auth', null, ['motivo' => 'contrasena_no_cumple_politica', 'requisitos_fallidos' => $fallos], 'error', $correo);
+    responderPoliticaContrasenaInvalida($fallos);
 }
 
-// 5. Verificar que el correo no exista ya
 $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE correo = :correo LIMIT 1');
 $stmt->execute(['correo' => $correo]);
 if ($stmt->fetch()) {
-    http_response_code(409); // 409 = Conflicto, el recurso ya existe
+    registrarLog($pdo, 'REGISTRO_FALLIDO', 'auth', null, ['motivo' => 'correo_ya_registrado'], 'error', $correo);
+    http_response_code(409);
     echo json_encode(['error' => 'Ya existe una cuenta registrada con ese correo.']);
     exit;
 }
 
-// 6. Crear la cuenta (siempre con rol 'estudiante' - los otros roles los crea el Admin)
 $hash = password_hash($contrasena, PASSWORD_DEFAULT);
+$tokenSesion = bin2hex(random_bytes(16));
 
 $stmt = $pdo->prepare(
-    'INSERT INTO usuarios (nombre_completo, correo, contrasena_hash, rol, programa_academico)
-     VALUES (:nombre, :correo, :hash, :rol, :programa)'
+    'INSERT INTO usuarios (nombre_completo, correo, contrasena_hash, rol, programa_academico, token_sesion)
+     VALUES (:nombre, :correo, :hash, :rol, :programa, :token)'
 );
 $stmt->execute([
     'nombre' => $nombre,
@@ -82,9 +81,12 @@ $stmt->execute([
     'hash' => $hash,
     'rol' => 'estudiante',
     'programa' => $programa,
+    'token' => $tokenSesion,
 ]);
 
 $nuevoId = $pdo->lastInsertId();
+
+registrarLog($pdo, 'REGISTRO_EXITOSO', 'auth', ['id' => (int) $nuevoId, 'correo' => $correo, 'rol' => 'estudiante']);
 
 echo json_encode([
     'mensaje' => 'Cuenta creada correctamente',
@@ -94,5 +96,8 @@ echo json_encode([
         'correo' => $correo,
         'rol' => 'estudiante',
         'programa_academico' => $programa,
+        'politica_aceptada' => false,
+        'token_sesion' => $tokenSesion,
     ]
 ]);
+

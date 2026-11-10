@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -68,7 +70,11 @@ $stmt->execute([
     'estado' => 'pendiente',
 ]);
 
+$citaId = $pdo->lastInsertId();
+registrarLog($pdo, 'CITA_CREADA', 'citas', $estudianteId, ['cita_id' => (int) $citaId, 'profesional_id' => (int) $profesionalId, 'fecha' => $fecha, 'hora' => $hora]);
+
 echo json_encode([
     'mensaje' => 'Cita solicitada. Bienestar la confirmará pronto.',
-    'cita_id' => $pdo->lastInsertId(),
+    'cita_id' => $citaId,
 ]);
+

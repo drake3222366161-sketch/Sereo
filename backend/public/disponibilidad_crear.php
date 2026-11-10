@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -61,4 +63,8 @@ $stmt->execute([
     'hora_fin' => $horaFin,
 ]);
 
-echo json_encode(['mensaje' => 'Disponibilidad agregada.', 'id' => $pdo->lastInsertId()]);
+$nuevoId = $pdo->lastInsertId();
+registrarLog($pdo, 'DISPONIBILIDAD_CREADA', 'disponibilidad', $profesionalId, ['id' => (int) $nuevoId, 'fecha' => $fecha, 'hora_inicio' => $horaInicio, 'hora_fin' => $horaFin]);
+
+echo json_encode(['mensaje' => 'Disponibilidad agregada.', 'id' => $nuevoId]);
+

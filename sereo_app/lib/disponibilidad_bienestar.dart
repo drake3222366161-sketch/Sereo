@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'api_config.dart';
+import 'package:sereo_app/l10n_ext.dart';
 
 class DisponibilidadBienestarScreen extends StatefulWidget {
   final int profesionalId;
@@ -31,7 +33,7 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
     setState(() => _cargando = true);
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/disponibilidad_listar.php'),
+        Uri.parse('${ApiConfig.baseUrl}/disponibilidad_listar.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'modo': 'propias', 'profesional_id': widget.profesionalId}),
       );
@@ -52,7 +54,7 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
 
   Future<void> _agregarFranja() async {
     if (_fechaSeleccionada == null || _horaInicio == null || _horaFin == null) {
-      setState(() => _error = 'Completa fecha, hora inicio y hora fin.');
+      setState(() => _error = context.t.disponibilidadBienestarCompletaTodosLosCampos);
       return;
     }
 
@@ -66,7 +68,7 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
 
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/disponibilidad_crear.php'),
+        Uri.parse('${ApiConfig.baseUrl}/disponibilidad_crear.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'profesional_id': widget.profesionalId,
@@ -98,7 +100,7 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
   Future<void> _desactivarFranja(int id) async {
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/disponibilidad_eliminar.php'),
+        Uri.parse('${ApiConfig.baseUrl}/disponibilidad_eliminar.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'id': id, 'profesional_id': widget.profesionalId}),
       );
@@ -122,7 +124,7 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Agregar franja de disponibilidad',
+          Text(context.t.disponibilidadBienestarAgregarFranjaDeDisponibilidad,
               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
           const SizedBox(height: 12),
 
@@ -146,7 +148,7 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
               OutlinedButton.icon(
                 icon: const Icon(Icons.calendar_today, size: 16),
                 label: Text(_fechaSeleccionada == null
-                    ? 'Elegir fecha'
+                    ? context.t.disponibilidadBienestarElegirFecha
                     : '${_fechaSeleccionada!.year}-${_fechaSeleccionada!.month.toString().padLeft(2, '0')}-${_fechaSeleccionada!.day.toString().padLeft(2, '0')}'),
                 onPressed: () async {
                   final fecha = await showDatePicker(
@@ -160,7 +162,7 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
               ),
               OutlinedButton.icon(
                 icon: const Icon(Icons.access_time, size: 16),
-                label: Text(_horaInicio == null ? 'Hora inicio' : _formatoHora(_horaInicio!)),
+                label: Text(_horaInicio == null ? context.t.disponibilidadBienestarHoraInicio : _formatoHora(_horaInicio!)),
                 onPressed: () async {
                   final hora = await showTimePicker(context: context, initialTime: TimeOfDay.now());
                   if (hora != null) setState(() => _horaInicio = hora);
@@ -168,7 +170,7 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
               ),
               OutlinedButton.icon(
                 icon: const Icon(Icons.access_time, size: 16),
-                label: Text(_horaFin == null ? 'Hora fin' : _formatoHora(_horaFin!)),
+                label: Text(_horaFin == null ? context.t.disponibilidadBienestarHoraFin : _formatoHora(_horaFin!)),
                 onPressed: () async {
                   final hora = await showTimePicker(context: context, initialTime: TimeOfDay.now());
                   if (hora != null) setState(() => _horaFin = hora);
@@ -178,19 +180,19 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
                 onPressed: _guardando ? null : _agregarFranja,
                 child: _guardando
                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('Agregar'),
+                    : Text(context.t.agendaBienestarAgregar),
               ),
             ],
           ),
 
           const SizedBox(height: 28),
-          const Text('Mis franjas', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+          Text(context.t.disponibilidadBienestarMisFranjas, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
           const SizedBox(height: 12),
 
           if (_cargando) const Center(child: CircularProgressIndicator()),
 
           if (!_cargando && _franjas.isEmpty)
-            const Text('Aún no has agregado disponibilidad.', style: TextStyle(color: Colors.black54)),
+            Text(context.t.disponibilidadBienestarAunNoHasAgregado, style: TextStyle(color: Colors.black54)),
 
           for (final f in _franjas)
             Builder(builder: (context) {
@@ -204,10 +206,10 @@ class _DisponibilidadBienestarScreenState extends State<DisponibilidadBienestarS
                     '${f['fecha']}  ·  ${f['hora_inicio']} - ${f['hora_fin']}',
                     style: activa ? null : const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                   ),
-                  subtitle: Text(activa ? 'Activa' : 'Desactivada'),
+                  subtitle: Text(activa ? context.t.disponibilidadBienestarActiva : context.t.disponibilidadBienestarDesactivada),
                   trailing: activa
                       ? IconButton(
-                          tooltip: 'Desactivar',
+                          tooltip: context.t.agendaBienestarDesactivar,
                           icon: const Icon(Icons.visibility_off_outlined),
                           onPressed: () => _desactivarFranja(f['id']),
                         )

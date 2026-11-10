@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -37,6 +39,7 @@ if ($id === null || $nuevoEstado === null || !$adminId) {
 
 // Un admin no puede desactivarse a sí mismo (evita que se quede sin acceso)
 if ((int) $id === (int) $adminId && !$nuevoEstado) {
+    registrarLog($pdo, 'USUARIO_DESACTIVACION_DENEGADA', 'usuarios', $adminId, ['motivo' => 'autodesactivacion'], 'denegado');
     http_response_code(403);
     echo json_encode(['error' => 'No puedes desactivar tu propia cuenta.']);
     exit;
@@ -45,4 +48,7 @@ if ((int) $id === (int) $adminId && !$nuevoEstado) {
 $stmt = $pdo->prepare('UPDATE usuarios SET activo = :activo WHERE id = :id');
 $stmt->execute(['activo' => $nuevoEstado ? 1 : 0, 'id' => $id]);
 
+registrarLog($pdo, $nuevoEstado ? 'USUARIO_ACTIVADO' : 'USUARIO_DESACTIVADO', 'usuarios', $adminId, ['usuario_afectado_id' => (int) $id]);
+
 echo json_encode(['mensaje' => $nuevoEstado ? 'Cuenta activada.' : 'Cuenta desactivada.']);
+

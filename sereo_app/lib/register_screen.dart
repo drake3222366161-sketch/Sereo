@@ -1,8 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'api_config.dart';
 import 'theme.dart';
+import 'politica_screen.dart';
+import 'inactivity_guard.dart';
+import 'captcha_widget.dart';
 import 'home_estudiante.dart';
+import 'password_requirements.dart';
+import 'package:sereo_app/l10n_ext.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,11 +22,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _correoController = TextEditingController();
   final _contrasenaController = TextEditingController();
   final _confirmarController = TextEditingController();
+  final _captchaKey = GlobalKey<CaptchaWidgetState>();
 
   String? _programaSeleccionado;
   bool _ocultarContrasena = true;
   bool _cargando = false;
   String? _error;
+
+  String _correoCompleto() {
+    final texto = _correoController.text.trim();
+    if (texto.contains('@')) return texto;
+    return '$texto@ucundinamarca.edu.co';
+  }
 
   Future<void> _registrar() async {
     setState(() {
@@ -30,13 +43,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (_programaSeleccionado == null) {
       setState(() {
-        _error = 'Selecciona tu programa académico.';
+        _error = context.t.registerSeleccionaTuProgramaAcademico;
         _cargando = false;
       });
       return;
     }
 
-    final url = Uri.parse('http://localhost/sereo/backend/public/registro.php');
+    if (!PasswordRules.cumpleTodo(_contrasenaController.text)) {
+      setState(() {
+        _error = context.t.passwordPolicyError;
+        _cargando = false;
+      });
+      return;
+    }
+
+    if (!_captchaKey.currentState!.validar()) {
+      setState(() {
+        _error = context.t.err_captcha;
+        _cargando = false;
+      });
+      return;
+    }
+
+    final url = Uri.parse('${ApiConfig.baseUrl}/registro.php');
 
     try {
       final respuesta = await http.post(
@@ -44,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'nombre_completo': _nombreController.text.trim(),
-          'correo': _correoController.text.trim(),
+          'correo': _correoCompleto(),
           'programa_academico': _programaSeleccionado,
           'contrasena': _contrasenaController.text,
           'confirmar_contrasena': _confirmarController.text,
@@ -54,7 +83,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final datos = jsonDecode(respuesta.body);
 
       if (respuesta.statusCode != 200) {
-        setState(() => _error = datos['error']);
+        setState(() => _error = datos['codigo'] == 'password_policy'
+            ? mensajeErrorContrasena(context, datos)
+            : datos['error']);
         return;
       }
 
@@ -62,13 +93,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       final usuario = datos['usuario'];
       final id = usuario['id'] is int ? usuario['id'] : int.parse(usuario['id'].toString());
+      final token = usuario['token_sesion'] as String;
+      final correo = usuario['correo'] as String;
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => HomeEstudiante(
-            estudianteId: id,
-            nombreEstudiante: usuario['nombre'],
-            programaAcademico: usuario['programa_academico'],
+          builder: (_) => PoliticaScreen(
+            usuarioId: id,
+            alContinuar: (ctx) {
+              Navigator.of(ctx).pushReplacement(
+                MaterialPageRoute(
+                  builder: (_) => InactivityGuard(
+                    usuarioId: id,
+                    correo: correo,
+                    tokenSesion: token,
+                    child: HomeEstudiante(
+                      estudianteId: id,
+                      nombreEstudiante: usuario['nombre'],
+                      programaAcademico: usuario['programa_academico'],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       );
@@ -96,10 +143,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text('Crear cuenta de estudiante',
+                  Text(context.t.registerCrearCuentaDeEstudiante,
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
-                  const Text('Regístrate con tu correo institucional',
+                  Text(context.t.registerRegistrateConTuCorreo,
                       style: TextStyle(fontSize: 13, color: textoSecundario)),
                   const SizedBox(height: 24),
 
@@ -116,55 +163,59 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(height: 16),
                   ],
 
-                  const Text('Nombre completo',
+                  Text(context.t.registerNombreCompleto,
                       style: TextStyle(fontSize: 12, color: textoSecundario)),
                   const SizedBox(height: 4),
                   TextField(
                     controller: _nombreController,
-                    decoration: const InputDecoration(hintText: 'Ana María Gómez'),
+                    decoration: InputDecoration(hintText: context.t.registerAnaMariaGomez),
                   ),
                   const SizedBox(height: 16),
 
-                  const Text('Correo institucional',
+                  Text(context.t.institutionalEmail,
                       style: TextStyle(fontSize: 12, color: textoSecundario)),
                   const SizedBox(height: 4),
                   TextField(
                     controller: _correoController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(hintText: 'nombre@ucundinamarca.edu.co'),
+                    decoration: InputDecoration(
+                      hintText: context.t.emailHint,
+                      suffixText: '@ucundinamarca.edu.co',
+                    ),
                   ),
                   const SizedBox(height: 16),
 
-                  const Text('Programa académico',
+                  Text(context.t.registerProgramaAcademico,
                       style: TextStyle(fontSize: 12, color: textoSecundario)),
                   const SizedBox(height: 4),
                   DropdownButtonFormField<String>(
                     value: _programaSeleccionado,
-                    decoration: const InputDecoration(hintText: 'Selecciona tu programa'),
-                    items: const [
+                    decoration: InputDecoration(hintText: context.t.registerSeleccionaTuPrograma),
+                    items: [
                       DropdownMenuItem(
-                          value: 'Administración de Empresas', child: Text('Administración de Empresas')),
-                      DropdownMenuItem(value: 'Contaduría Pública', child: Text('Contaduría Pública')),
-                      DropdownMenuItem(value: 'Zootecnia', child: Text('Zootecnia')),
+                          value: 'Administración de Empresas', child: Text(context.t.registerAdministracionDeEmpresas)),
+                      DropdownMenuItem(value: 'Contaduría Pública', child: Text(context.t.registerContaduriaPublica)),
+                      DropdownMenuItem(value: 'Zootecnia', child: Text(context.t.registerZootecnia)),
                       DropdownMenuItem(
                           value: 'Ingeniería de Sistemas y Computación',
-                          child: Text('Ingeniería de Sistemas y Computación')),
-                      DropdownMenuItem(value: 'Ingeniería Electrónica', child: Text('Ingeniería Electrónica')),
-                      DropdownMenuItem(value: 'Ciencias Sociales', child: Text('Ciencias Sociales')),
-                      DropdownMenuItem(value: 'Educación Física', child: Text('Educación Física')),
+                          child: Text(context.t.registerIngenieriaDeSistemasY)),
+                      DropdownMenuItem(value: 'Ingeniería Electrónica', child: Text(context.t.registerIngenieriaElectronica)),
+                      DropdownMenuItem(value: 'Ciencias Sociales', child: Text(context.t.registerCienciasSociales)),
+                      DropdownMenuItem(value: 'Educación Física', child: Text(context.t.registerEducacionFisica)),
                     ],
                     onChanged: (valor) => setState(() => _programaSeleccionado = valor),
                   ),
                   const SizedBox(height: 16),
 
-                  const Text('Contraseña',
+                  Text(context.t.password,
                       style: TextStyle(fontSize: 12, color: textoSecundario)),
                   const SizedBox(height: 4),
                   TextField(
                     controller: _contrasenaController,
                     obscureText: _ocultarContrasena,
+                    onChanged: (_) => setState(() {}),
                     decoration: InputDecoration(
-                      hintText: 'Mínimo 8 caracteres',
+                      hintText: context.t.passwordHintMin10,
                       suffixIcon: IconButton(
                         icon: Icon(_ocultarContrasena
                             ? Icons.visibility_outlined
@@ -173,17 +224,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
+                  PasswordRequirements(password: _contrasenaController.text),
                   const SizedBox(height: 16),
 
-                  const Text('Confirmar contraseña',
+                  Text(context.t.registerConfirmarContrasena,
                       style: TextStyle(fontSize: 12, color: textoSecundario)),
                   const SizedBox(height: 4),
                   TextField(
                     controller: _confirmarController,
                     obscureText: _ocultarContrasena,
-                    decoration: const InputDecoration(hintText: 'Repite tu contraseña'),
-                    onSubmitted: (_) => _registrar(),
+                    decoration: InputDecoration(hintText: context.t.registerRepiteTuContrasena),
                   ),
+                  const SizedBox(height: 16),
+                  CaptchaWidget(key: _captchaKey),
                   const SizedBox(height: 24),
 
                   ElevatedButton(
@@ -199,7 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Text('Crear cuenta'),
+                        : Text(context.t.registerCrearCuenta),
                   ),
                   const SizedBox(height: 24),
                 ],

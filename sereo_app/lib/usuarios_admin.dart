@@ -1,6 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+import 'api_config.dart';
+import 'password_requirements.dart';
+import 'package:sereo_app/l10n_ext.dart';
+
+// Error del servidor que conserva la respuesta completa (para poder traducir
+// el código 'password_policy' según el idioma de la app).
+class _ErrorApi implements Exception {
+  final dynamic datos;
+  _ErrorApi(this.datos);
+  String get mensaje => datos['error']?.toString() ?? 'Error';
+}
 
 class UsuariosAdminScreen extends StatefulWidget {
   final int adminId;
@@ -26,7 +38,7 @@ class _UsuariosAdminScreenState extends State<UsuariosAdminScreen> {
     setState(() => _cargando = true);
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/usuarios_listar.php'),
+        Uri.parse('${ApiConfig.baseUrl}/usuarios_listar.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({if (_filtroRol != 'todos') 'rol_filtro': _filtroRol}),
       );
@@ -42,7 +54,7 @@ class _UsuariosAdminScreenState extends State<UsuariosAdminScreen> {
   Future<void> _cambiarEstado(int id, bool nuevoEstado) async {
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/usuarios_cambiar_estado.php'),
+        Uri.parse('${ApiConfig.baseUrl}/usuarios_cambiar_estado.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'id': id, 'activo': nuevoEstado, 'admin_id': widget.adminId}),
       );
@@ -63,18 +75,19 @@ class _UsuariosAdminScreenState extends State<UsuariosAdminScreen> {
       builder: (_) => _DialogoUsuario(
         onGuardar: (nombre, correo, contrasena, rol) async {
           final respuesta = await http.post(
-            Uri.parse('http://localhost/sereo/backend/public/usuarios_crear.php'),
+            Uri.parse('${ApiConfig.baseUrl}/usuarios_crear.php'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
               'nombre_completo': nombre,
               'correo': correo,
               'contrasena': contrasena,
               'rol': rol,
+              'admin_id': widget.adminId,
             }),
           );
           final datos = jsonDecode(respuesta.body);
           if (respuesta.statusCode != 200) {
-            throw Exception(datos['error']);
+            throw _ErrorApi(datos);
           }
           await _cargar();
         },
@@ -92,9 +105,9 @@ class _UsuariosAdminScreenState extends State<UsuariosAdminScreen> {
         esEdicion: true,
         onGuardar: (nombre, correo, _, __) async {
           final respuesta = await http.post(
-            Uri.parse('http://localhost/sereo/backend/public/usuarios_actualizar.php'),
+            Uri.parse('${ApiConfig.baseUrl}/usuarios_actualizar.php'),
             headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'id': usuario['id'], 'nombre_completo': nombre, 'correo': correo}),
+            body: jsonEncode({'id': usuario['id'], 'nombre_completo': nombre, 'correo': correo, 'admin_id': widget.adminId}),
           );
           final datos = jsonDecode(respuesta.body);
           if (respuesta.statusCode != 200) {
@@ -146,17 +159,26 @@ class _UsuariosAdminScreenState extends State<UsuariosAdminScreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _chipFiltro('todos', 'Todos'),
-                    _chipFiltro('estudiante', 'Estudiantes'),
-                    _chipFiltro('bienestar', 'Bienestar'),
-                    _chipFiltro('admin', 'Admin'),
+                    _chipFiltro('todos', context.t.filtroTodos),
+                    _chipFiltro('estudiante', context.t.homeStaffEstudiantes),
+                    _chipFiltro('bienestar', context.t.usuariosAdminBienestar),
+                    _chipFiltro('admin', context.t.usuariosAdminAdmin),
                   ],
                 ),
               ),
             ),
+            IconButton(
+              tooltip: context.t.usuariosAdminExportarAExcel,
+              icon: const Icon(Icons.download_outlined),
+              onPressed: () async {
+                final url = Uri.parse('${ApiConfig.baseUrl}/reporte_usuarios_csv.php?usuario_id=${widget.adminId}');
+                await launchUrl(url, mode: LaunchMode.externalApplication);
+              },
+            ),
+            const SizedBox(width: 8),
             ElevatedButton.icon(
               icon: const Icon(Icons.add, size: 18),
-              label: const Text('Nueva cuenta'),
+              label: Text(context.t.usuariosAdminNuevaCuenta),
               onPressed: _abrirFormularioCrear,
             ),
           ],
@@ -166,7 +188,7 @@ class _UsuariosAdminScreenState extends State<UsuariosAdminScreen> {
         if (_cargando) const Expanded(child: Center(child: CircularProgressIndicator())),
 
         if (!_cargando && _usuarios.isEmpty)
-          const Expanded(child: Center(child: Text('No hay usuarios en este filtro.'))),
+          Expanded(child: Center(child: Text(context.t.usuariosAdminNoHayUsuariosEn))),
 
         if (!_cargando && _usuarios.isNotEmpty)
           Expanded(
@@ -246,6 +268,10 @@ class _DialogoUsuarioState extends State<_DialogoUsuario> {
   }
 
   Future<void> _guardar() async {
+    if (!widget.esEdicion && !PasswordRules.cumpleTodo(_contrasenaController.text)) {
+      setState(() => _error = context.t.passwordPolicyError);
+      return;
+    }
     setState(() {
       _guardando = true;
       _error = null;
@@ -259,7 +285,16 @@ class _DialogoUsuarioState extends State<_DialogoUsuario> {
       );
       if (mounted) Navigator.pop(context);
     } catch (e) {
-      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+      if (!mounted) return;
+      String mensaje;
+      if (e is _ErrorApi) {
+        mensaje = e.datos['codigo'] == 'password_policy'
+            ? mensajeErrorContrasena(context, e.datos)
+            : e.mensaje;
+      } else {
+        mensaje = e.toString().replaceFirst('Exception: ', '');
+      }
+      setState(() => _error = mensaje);
     } finally {
       if (mounted) setState(() => _guardando = false);
     }
@@ -268,7 +303,7 @@ class _DialogoUsuarioState extends State<_DialogoUsuario> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.esEdicion ? 'Editar usuario' : 'Nueva cuenta'),
+      title: Text(widget.esEdicion ? context.t.usuariosAdminEditarUsuario : context.t.usuariosAdminNuevaCuenta),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -280,27 +315,29 @@ class _DialogoUsuarioState extends State<_DialogoUsuario> {
             ],
             TextField(
               controller: _nombreController,
-              decoration: const InputDecoration(labelText: 'Nombre completo'),
+              decoration: InputDecoration(labelText: context.t.registerNombreCompleto),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _correoController,
-              decoration: const InputDecoration(labelText: 'Correo institucional'),
+              decoration: InputDecoration(labelText: context.t.institutionalEmail),
             ),
             if (!widget.esEdicion) ...[
               const SizedBox(height: 10),
               TextField(
                 controller: _contrasenaController,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: 'Contraseña (mín. 8 caracteres)'),
+                onChanged: (_) => setState(() {}),
+                decoration: InputDecoration(labelText: context.t.password),
               ),
+              PasswordRequirements(password: _contrasenaController.text),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _rol,
-                decoration: const InputDecoration(labelText: 'Rol'),
-                items: const [
-                  DropdownMenuItem(value: 'bienestar', child: Text('Bienestar')),
-                  DropdownMenuItem(value: 'admin', child: Text('Admin')),
+                decoration: InputDecoration(labelText: context.t.usuariosAdminRol),
+                items: [
+                  DropdownMenuItem(value: 'bienestar', child: Text(context.t.usuariosAdminBienestar)),
+                  DropdownMenuItem(value: 'admin', child: Text(context.t.usuariosAdminAdmin)),
                 ],
                 onChanged: (valor) => setState(() => _rol = valor!),
               ),
@@ -309,12 +346,12 @@ class _DialogoUsuarioState extends State<_DialogoUsuario> {
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(context.t.agendaBienestarCancelar)),
         ElevatedButton(
           onPressed: _guardando ? null : _guardar,
           child: _guardando
               ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-              : const Text('Guardar'),
+              : Text(context.t.usuariosAdminGuardar),
         ),
       ],
     );

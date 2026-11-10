@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'theme.dart';
+import 'api_config.dart';
+import 'package:sereo_app/l10n_ext.dart';
+import 'nivel_texto.dart';
 
 class SosBienestarScreen extends StatefulWidget {
   final int usuarioId; // id del profesional de bienestar logueado
@@ -26,7 +30,7 @@ class _SosBienestarScreenState extends State<SosBienestarScreen> {
     setState(() => _cargando = true);
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/sos_listar.php'),
+        Uri.parse('${ApiConfig.baseUrl}/sos_listar.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'rol': 'bienestar',
@@ -45,7 +49,7 @@ class _SosBienestarScreenState extends State<SosBienestarScreen> {
   Future<void> _cambiarEstado(int solicitudId, String nuevoEstado) async {
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/sos_actualizar_estado.php'),
+        Uri.parse('${ApiConfig.baseUrl}/sos_actualizar_estado.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'solicitud_id': solicitudId,
@@ -85,11 +89,11 @@ class _SosBienestarScreenState extends State<SosBienestarScreen> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _chipFiltro('pendiente', 'Pendientes'),
-              _chipFiltro('en_proceso', 'En proceso'),
-              _chipFiltro('atendida', 'Atendidas'),
-              _chipFiltro('cancelada', 'Canceladas'),
-              _chipFiltro('todas', 'Todas'),
+              _chipFiltro('pendiente', context.t.filtroPendientes),
+              _chipFiltro('en_proceso', context.t.filtroEnProceso),
+              _chipFiltro('atendida', context.t.filtroAtendidas),
+              _chipFiltro('cancelada', context.t.filtroCanceladas),
+              _chipFiltro('todas', context.t.filtroTodas),
             ],
           ),
         ),
@@ -98,7 +102,7 @@ class _SosBienestarScreenState extends State<SosBienestarScreen> {
         if (_cargando) const Expanded(child: Center(child: CircularProgressIndicator())),
 
         if (!_cargando && _solicitudes.isEmpty)
-          const Expanded(child: Center(child: Text('No hay solicitudes en este filtro.'))),
+          Expanded(child: Center(child: Text(context.t.sosBienestarNoHaySolicitudesEn))),
 
         if (!_cargando && _solicitudes.isNotEmpty)
           Expanded(
@@ -119,6 +123,14 @@ class _SosBienestarScreenState extends State<SosBienestarScreen> {
                               child: Text(s['estudiante_nombre'],
                                   style: const TextStyle(fontWeight: FontWeight.w600)),
                             ),
+                            Chip(
+                              label: Text(textoEstadoL10n(context, s['estado']),
+                                  style: const TextStyle(color: Colors.white, fontSize: 11)),
+                              backgroundColor: colorEstado(s['estado']),
+                              padding: EdgeInsets.zero,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            const SizedBox(width: 8),
                             Text(s['fecha_solicitud'],
                                 style: const TextStyle(fontSize: 11, color: Colors.black54)),
                           ],
@@ -131,7 +143,7 @@ class _SosBienestarScreenState extends State<SosBienestarScreen> {
                         if (s['telefono_contacto'] != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 4),
-                            child: Text('Tel: ${s['telefono_contacto']}',
+                            child: Text(context.t.sosTelefono(s['telefono_contacto']),
                                 style: const TextStyle(fontSize: 12)),
                           ),
                         const SizedBox(height: 10),
@@ -141,12 +153,12 @@ class _SosBienestarScreenState extends State<SosBienestarScreen> {
                             if (s['estado'] == 'pendiente')
                               ElevatedButton(
                                 onPressed: () => _cambiarEstado(s['id'], 'en_proceso'),
-                                child: const Text('Tomar caso'),
+                                child: Text(context.t.sosBienestarTomarCaso),
                               ),
                             if (s['estado'] == 'en_proceso')
                               ElevatedButton(
                                 onPressed: () => _cambiarEstado(s['id'], 'atendida'),
-                                child: const Text('Marcar atendida'),
+                                child: Text(context.t.agendaBienestarMarcarAtendida),
                               ),
                           ],
                         ),

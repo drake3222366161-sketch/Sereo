@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'theme.dart';
+import 'api_config.dart';
+import 'package:sereo_app/l10n_ext.dart';
+import 'nivel_texto.dart';
 
 class SosEstudianteScreen extends StatefulWidget {
   final int estudianteId;
@@ -36,14 +39,14 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
     setState(() => _cargandoLista = true);
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/sos_listar.php'),
+        Uri.parse('${ApiConfig.baseUrl}/sos_listar.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'rol': 'estudiante', 'estudiante_id': widget.estudianteId}),
       );
       final datos = jsonDecode(respuesta.body);
       setState(() => _misSolicitudes = datos['solicitudes'] ?? []);
     } catch (e) {
-      setState(() => _error = 'No se pudo cargar tu historial.');
+      setState(() => _error = context.t.sosEstudianteNoSePudoCargar);
     } finally {
       setState(() => _cargandoLista = false);
     }
@@ -51,7 +54,7 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
 
   Future<void> _enviarSolicitud() async {
     if (_notaController.text.trim().isEmpty) {
-      setState(() => _error = 'Cuéntanos brevemente qué necesitas.');
+      setState(() => _error = context.t.sosEstudianteCuentanosBrevemente);
       return;
     }
 
@@ -62,7 +65,7 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
 
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/sos_crear.php'),
+        Uri.parse('${ApiConfig.baseUrl}/sos_crear.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'estudiante_id': widget.estudianteId,
@@ -81,12 +84,12 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
       _telefonoController.clear();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Solicitud enviada. Bienestar la atenderá pronto.')),
+          SnackBar(content: Text(context.t.sosEstudianteSolicitudEnviadaBienestarLa)),
         );
       }
       await _cargarSolicitudes();
     } catch (e) {
-      setState(() => _error = 'Error de conexión: $e');
+      setState(() => _error = context.t.err_connection(e.toString()));
     } finally {
       setState(() => _enviando = false);
     }
@@ -95,7 +98,7 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
   Future<void> _cancelarSolicitud(int solicitudId) async {
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/sos_actualizar_estado.php'),
+        Uri.parse('${ApiConfig.baseUrl}/sos_actualizar_estado.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'solicitud_id': solicitudId,
@@ -118,40 +121,10 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
     }
   }
 
-  Color _colorEstado(String estado) {
-    switch (estado) {
-      case 'pendiente':
-        return const Color(0xFFB98900);
-      case 'en_proceso':
-        return primarioOscuro;
-      case 'atendida':
-        return const Color(0xFF2E7D32);
-      case 'cancelada':
-        return Colors.grey;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  String _textoEstado(String estado) {
-    switch (estado) {
-      case 'pendiente':
-        return 'Pendiente';
-      case 'en_proceso':
-        return 'En proceso';
-      case 'atendida':
-        return 'Atendida';
-      case 'cancelada':
-        return 'Cancelada';
-      default:
-        return estado;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Solicitud prioritaria (SOS)')),
+      appBar: AppBar(title: Text(context.t.homeEstudianteSolicitudPrioritariaSos)),
       body: RefreshIndicator(
         onRefresh: _cargarSolicitudes,
         child: ListView(
@@ -163,17 +136,14 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
                 color: const Color(0xFFFCEBEB),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Text(
-                'Si estás en una situación de crisis o riesgo inmediato, '
-                'comunícate directamente con la línea de emergencias. '
-                'Este formulario notifica a Bienestar, pero puede tardar '
-                'unos minutos en ser leído.',
+              child: Text(
+                context.t.sosEstudianteSiEstasEnUna,
                 style: TextStyle(fontSize: 13, color: Color(0xFF791F1F)),
               ),
             ),
             const SizedBox(height: 20),
 
-            const Text('Nueva solicitud', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+            Text(context.t.sosEstudianteNuevaSolicitud, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
             const SizedBox(height: 12),
 
             if (_error != null) ...[
@@ -191,8 +161,8 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
             TextField(
               controller: _notaController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: '¿Qué necesitas? (breve)',
+              decoration: InputDecoration(
+                labelText: context.t.sosEstudianteQueNecesitasBreve,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -200,8 +170,8 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
             TextField(
               controller: _telefonoController,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                labelText: 'Teléfono de contacto (opcional)',
+              decoration: InputDecoration(
+                labelText: context.t.sosEstudianteTelefonoDeContactoOpcional,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -218,18 +188,18 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
                   ? const SizedBox(
                       width: 20, height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : const Text('Enviar solicitud'),
+                  : Text(context.t.sosEstudianteEnviarSolicitud),
             ),
 
             const SizedBox(height: 32),
-            const Text('Mis solicitudes anteriores',
+            Text(context.t.sosEstudianteMisSolicitudesAnteriores,
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
             const SizedBox(height: 12),
 
             if (_cargandoLista) const Center(child: CircularProgressIndicator()),
 
             if (!_cargandoLista && _misSolicitudes.isEmpty)
-              const Text('Aún no has enviado ninguna solicitud.',
+              Text(context.t.sosEstudianteAunNoHasEnviado,
                   style: TextStyle(color: textoSecundario)),
 
             for (final s in _misSolicitudes)
@@ -243,22 +213,22 @@ class _SosEstudianteScreenState extends State<SosEstudianteScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Chip(
-                              label: Text(_textoEstado(s['estado']),
+                              label: Text(textoEstadoL10n(context, s['estado']),
                                   style: const TextStyle(color: Colors.white, fontSize: 11)),
-                              backgroundColor: _colorEstado(s['estado']),
+                              backgroundColor: colorEstado(s['estado']),
                               padding: EdgeInsets.zero,
                             ),
                             IconButton(
                               icon: const Icon(Icons.close, size: 18),
-                              tooltip: 'Cancelar',
+                              tooltip: context.t.agendaBienestarCancelar,
                               onPressed: () => _cancelarSolicitud(s['id']),
                             ),
                           ],
                         )
                       : Chip(
-                          label: Text(_textoEstado(s['estado']),
+                          label: Text(textoEstadoL10n(context, s['estado']),
                               style: const TextStyle(color: Colors.white, fontSize: 11)),
-                          backgroundColor: _colorEstado(s['estado']),
+                          backgroundColor: colorEstado(s['estado']),
                         ),
                 ),
               ),

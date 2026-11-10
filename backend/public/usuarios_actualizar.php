@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -51,9 +53,25 @@ if ($stmt->fetch()) {
     exit;
 }
 
+// Para el log: guardamos cómo estaba antes de cambiar
+$adminId = $datos['admin_id'] ?? null; // quién edita (para el log)
+$stmt = $pdo->prepare('SELECT nombre_completo, correo FROM usuarios WHERE id = :id LIMIT 1');
+$stmt->execute(['id' => $id]);
+$antes = $stmt->fetch(PDO::FETCH_ASSOC);
+
 $stmt = $pdo->prepare(
     'UPDATE usuarios SET nombre_completo = :nombre, correo = :correo WHERE id = :id'
 );
 $stmt->execute(['nombre' => $nombre, 'correo' => $correo, 'id' => $id]);
 
+$cambios = [];
+if ($antes && $antes['nombre_completo'] !== $nombre) {
+    $cambios['nombre_completo'] = ['antes' => $antes['nombre_completo'], 'despues' => $nombre];
+}
+if ($antes && $antes['correo'] !== $correo) {
+    $cambios['correo'] = ['antes' => $antes['correo'], 'despues' => $correo];
+}
+registrarLog($pdo, 'USUARIO_ACTUALIZADO', 'usuarios', $adminId, ['usuario_id' => (int) $id, 'cambios' => $cambios]);
+
 echo json_encode(['mensaje' => 'Usuario actualizado.']);
+

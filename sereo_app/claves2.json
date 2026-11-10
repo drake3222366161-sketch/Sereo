@@ -1,0 +1,114 @@
+{
+  "estadoPendiente": {
+    "es": "Pendiente",
+    "en": "Pending"
+  },
+  "estadoEnProceso": {
+    "es": "En proceso",
+    "en": "In progress"
+  },
+  "estadoConfirmada": {
+    "es": "Confirmada",
+    "en": "Confirmed"
+  },
+  "estadoReagendada": {
+    "es": "Reagendada",
+    "en": "Rescheduled"
+  },
+  "estadoAtendida": {
+    "es": "Atendida",
+    "en": "Attended"
+  },
+  "estadoCancelada": {
+    "es": "Cancelada",
+    "en": "Cancelled"
+  },
+  "calendarioMes": {
+    "es": "Mes",
+    "en": "Month"
+  },
+  "calendarioDosSemanas": {
+    "es": "2 semanas",
+    "en": "2 weeks"
+  },
+  "calendarioSemana": {
+    "es": "Semana",
+    "en": "Week"
+  },
+  "citaFecha": {
+    "es": "Fecha: {fecha}",
+    "en": "Date: {fecha}"
+  },
+  "citaMotivo": {
+    "es": "Motivo: {motivo}",
+    "en": "Reason: {motivo}"
+  },
+  "sosTelefono": {
+    "es": "Tel: {telefono}",
+    "en": "Phone: {telefono}"
+  },
+  "politicaSeccion1Titulo": {
+    "es": "1. Responsable del tratamiento",
+    "en": "1. Data controller"
+  },
+  "politicaSeccion1Texto": {
+    "es": "SEREO es una plataforma desarrollada para el área de Bienestar Universitario de la Universidad de Cundinamarca, orientada al acompañamiento psicológico y emocional de su comunidad estudiantil. El área de Bienestar Universitario actúa como responsable del tratamiento de los datos personales recolectados a través de esta aplicación.",
+    "en": "SEREO is a platform developed for the University Wellbeing area of Universidad de Cundinamarca, aimed at the psychological and emotional support of its student community. The University Wellbeing area acts as the controller of the personal data collected through this application."
+  },
+  "politicaSeccion2Titulo": {
+    "es": "2. Datos que se recolectan",
+    "en": "2. Data collected"
+  },
+  "politicaSeccion2Texto": {
+    "es": "• Datos de identificación: nombre completo, correo institucional, programa académico.\n• Credenciales de acceso: contraseña (almacenada de forma cifrada).\n• Datos sensibles de salud mental: solicitudes de atención prioritaria (SOS), diario emocional, autoevaluaciones psicológicas, e historial de citas con profesionales de Bienestar.\n• Datos técnicos: preferencias de la aplicación y datos de sesión.",
+    "en": "• Identification data: full name, institutional email, academic program.\n• Access credentials: password (stored in encrypted form).\n• Sensitive mental health data: priority care requests (SOS), emotional journal, psychological self-assessments, and history of appointments with Wellbeing professionals.\n• Technical data: application preferences and session data."
+  },
+  "politicaSeccion3Titulo": {
+    "es": "3. Finalidad del tratamiento",
+    "en": "3. Purpose of the processing"
+  },
+  "politicaSeccion3Texto": {
+    "es": "Verificar tu identidad y pertenencia a la comunidad universitaria, gestionar solicitudes de atención psicológica y citas, permitir el seguimiento de tu bienestar emocional por parte de profesionales autorizados, y generar estadísticas agregadas y anónimas para apoyar decisiones institucionales.",
+    "en": "To verify your identity and membership of the university community, manage psychological care requests and appointments, allow authorized professionals to follow up on your emotional wellbeing, and generate aggregated, anonymous statistics to support institutional decisions."
+  },
+  "politicaSeccion4Titulo": {
+    "es": "4. Confidencialidad de la información sensible",
+    "en": "4. Confidentiality of sensitive information"
+  },
+  "politicaSeccion4Texto": {
+    "es": "La información relacionada con tu estado emocional (diario, autoevaluaciones, solicitudes SOS) es confidencial. Solo el personal de Bienestar autorizado tiene acceso, y únicamente en el contexto necesario para brindarte atención. El personal administrativo del sistema NO tiene acceso a esta información bajo ninguna circunstancia.",
+    "en": "Information related to your emotional state (journal, self-assessments, SOS requests) is confidential. Only authorized Wellbeing staff have access, and only in the context necessary to provide you with care. The system’s administrative staff do NOT have access to this information under any circumstances."
+  },
+  "politicaSeccion5Titulo": {
+    "es": "5. Conservación de la información",
+    "en": "5. Data retention"
+  },
+  "politicaSeccion5Texto": {
+    "es": "La información no se elimina de forma permanente. Las solicitudes, citas y cuentas pueden cancelarse o desactivarse, pero se conservan con fines de trazabilidad, auditoría y continuidad del acompañamiento.",
+    "en": "Information is not permanently deleted. Requests, appointments and accounts can be cancelled or deactivated, but they are kept for traceability, audit and continuity of support."
+  },
+  "politicaSeccion6Titulo": {
+    "es": "6. Tus derechos",
+    "en": "6. Your rights"
+  },
+  "politicaSeccion6Texto": {
+    "es": "Tienes derecho a conocer, actualizar y rectificar tus datos; ser informado sobre su uso; presentar quejas ante las autoridades competentes; y revocar tu autorización o solicitar la supresión de tus datos, cuando no exista un deber legal que lo impida.",
+    "en": "You have the right to know, update and rectify your data; to be informed about how it is used; to file complaints with the competent authorities; and to revoke your authorization or request the deletion of your data, when there is no legal duty preventing it."
+  },
+  "politicaSeccion7Titulo": {
+    "es": "7. Uso de almacenamiento local",
+    "en": "7. Use of local storage"
+  },
+  "politicaSeccion7Texto": {
+    "es": "SEREO utiliza almacenamiento local en tu dispositivo (similar a las cookies en aplicaciones web) para mantener tu sesión activa y recordar tus preferencias, como el tema visual. Esta información permanece únicamente en tu dispositivo.",
+    "en": "SEREO uses local storage on your device (similar to cookies in web applications) to keep your session active and remember your preferences, such as the visual theme. This information remains only on your device."
+  },
+  "politicaSeccion8Titulo": {
+    "es": "8. Aceptación",
+    "en": "8. Acceptance"
+  },
+  "politicaSeccion8Texto": {
+    "es": "El uso de SEREO requiere la aceptación expresa de esta política, de acuerdo con la Ley 1581 de 2012 y sus decretos reglamentarios.",
+    "en": "Using SEREO requires express acceptance of this policy, in accordance with Law 1581 of 2012 and its implementing decrees."
+  }
+}

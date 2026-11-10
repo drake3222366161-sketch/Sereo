@@ -1,0 +1,121 @@
+lib\agenda_bienestar.dart:278: (interpolacion compleja) Disponibilidad - ${_soloFecha(_diaSeleccionado)}
+lib\agenda_bienestar.dart:322: (interpolacion compleja) Citas - ${_soloFecha(_diaSeleccionado)}
+lib\agenda_bienestar.dart:89: HORA DE INICIO
+lib\agenda_bienestar.dart:97: HORA DE FIN
+lib\autoevaluacion_estudiante.dart:25: Nunca
+lib\autoevaluacion_estudiante.dart:26: Varios días
+lib\autoevaluacion_estudiante.dart:27: Más de la mitad de los días
+lib\autoevaluacion_estudiante.dart:28: Casi todos los días
+lib\autoevaluaciones_bienestar.dart:86: Todos
+lib\autoevaluaciones_bienestar.dart:87: Severo
+lib\autoevaluaciones_bienestar.dart:87: Severo
+lib\autoevaluaciones_bienestar.dart:88: Moderadamente severo
+lib\autoevaluaciones_bienestar.dart:88: Mod. severo
+lib\autoevaluaciones_bienestar.dart:89: Moderado
+lib\autoevaluaciones_bienestar.dart:89: Moderado
+lib\autoevaluaciones_bienestar.dart:90: Leve
+lib\autoevaluaciones_bienestar.dart:90: Leve
+lib\autoevaluaciones_bienestar.dart:91: Minimo
+lib\autoevaluaciones_bienestar.dart:91: Mínimo
+lib\backup_restore_admin.dart:91: RESTAURAR
+lib\citas_bienestar.dart:118: Pendientes
+lib\citas_bienestar.dart:119: Confirmadas
+lib\citas_bienestar.dart:120: Reagendadas
+lib\citas_bienestar.dart:121: Atendidas
+lib\citas_bienestar.dart:122: Canceladas
+lib\citas_bienestar.dart:123: Todas
+lib\citas_estudiante.dart:190: (interpolacion compleja) Horarios disponibles - ${_soloFecha(_diaSeleccionado)}
+lib\citas_estudiante.dart:80: Bienestar deberá confirmarla.
+lib\citas_estudiante.dart:222: Por asignar
+lib\citas_estudiante.dart:238: el profesional asignado
+lib\disponibilidad_bienestar.dart:56: Completa fecha, hora inicio y hora fin.
+lib\disponibilidad_bienestar.dart:150: Elegir fecha
+lib\disponibilidad_bienestar.dart:164: Hora inicio
+lib\disponibilidad_bienestar.dart:172: Hora fin
+lib\disponibilidad_bienestar.dart:208: Activa
+lib\disponibilidad_bienestar.dart:208: Desactivada
+lib\home_estudiante.dart:95: Tema claro
+lib\home_estudiante.dart:95: Tema oscuro
+lib\home_estudiante.dart:177: Diario emocional
+lib\home_estudiante.dart:182: Perfil
+lib\home_staff.dart:364: (interpolacion compleja) ${widget.nombreUsuario}\n(${widget.rol})
+lib\home_staff.dart:332: Tema claro
+lib\home_staff.dart:332: Tema oscuro
+lib\home_staff.dart:388: Solicitudes pendientes
+lib\home_staff.dart:389: Citas de hoy
+lib\home_staff.dart:390: Citas esta semana
+lib\home_staff.dart:398: Estudiantes
+lib\home_staff.dart:399: Bienestar
+lib\home_staff.dart:400: Administradores
+lib\inactivity_guard.dart:71: Se cerró tu sesión por inactividad.
+lib\inactivity_guard.dart:88: Tu sesión fue cerrada porque iniciaste sesión con esta cuenta en otro dispositiv
+lib\inactivity_guard.dart:180: No se pudo verificar la contraseña.
+lib\politica_screen.dart:62: 1. Responsable del tratamiento
+lib\politica_screen.dart:63: SEREO es una plataforma desarrollada para el área de Bienestar 
+lib\politica_screen.dart:64: Universitario de la Universidad de Cundinamarca, orientada al 
+lib\politica_screen.dart:65: acompañamiento psicológico y emocional de su comunidad estudiantil. 
+lib\politica_screen.dart:66: El área de Bienestar Universitario actúa como responsable del 
+lib\politica_screen.dart:67: tratamiento de los datos personales recolectados a través de esta 
+lib\politica_screen.dart:68: aplicación.
+lib\politica_screen.dart:69: 2. Datos que se recolectan
+lib\politica_screen.dart:70: • Datos de identificación: nombre completo, correo institucional, 
+lib\politica_screen.dart:71: programa académico.\n
+lib\politica_screen.dart:72: • Credenciales de acceso: contraseña (almacenada de forma cifrada).\n
+lib\politica_screen.dart:73: • Datos sensibles de salud mental: solicitudes de atención prioritaria 
+lib\politica_screen.dart:74: (SOS), diario emocional, autoevaluaciones psicológicas, e historial de 
+lib\politica_screen.dart:75: citas con profesionales de Bienestar.\n
+lib\politica_screen.dart:76: • Datos técnicos: preferencias de la aplicación y datos de sesión.
+lib\politica_screen.dart:77: 3. Finalidad del tratamiento
+lib\politica_screen.dart:78: Verificar tu identidad y pertenencia a la comunidad universitaria, 
+lib\politica_screen.dart:79: gestionar solicitudes de atención psicológica y citas, permitir el 
+lib\politica_screen.dart:80: seguimiento de tu bienestar emocional por parte de profesionales 
+lib\politica_screen.dart:81: autorizados, y generar estadísticas agregadas y anónimas para apoyar 
+lib\politica_screen.dart:82: decisiones institucionales.
+lib\politica_screen.dart:83: 4. Confidencialidad de la información sensible
+lib\politica_screen.dart:84: La información relacionada con tu estado emocional (diario, 
+lib\politica_screen.dart:85: autoevaluaciones, solicitudes SOS) es confidencial. Solo el personal 
+lib\politica_screen.dart:86: de Bienestar autorizado tiene acceso, y únicamente en el contexto 
+lib\politica_screen.dart:87: necesario para brindarte atención. El personal administrativo del 
+lib\politica_screen.dart:88: sistema NO tiene acceso a esta información bajo ninguna circunstancia.
+lib\politica_screen.dart:89: 5. Conservación de la información
+lib\politica_screen.dart:90: La información no se elimina de forma permanente. Las solicitudes, 
+lib\politica_screen.dart:91: citas y cuentas pueden cancelarse o desactivarse, pero se conservan 
+lib\politica_screen.dart:92: con fines de trazabilidad, auditoría y continuidad del 
+lib\politica_screen.dart:93: acompañamiento.
+lib\politica_screen.dart:94: 6. Tus derechos
+lib\politica_screen.dart:95: Tienes derecho a conocer, actualizar y rectificar tus datos; ser 
+lib\politica_screen.dart:96: informado sobre su uso; presentar quejas ante las autoridades 
+lib\politica_screen.dart:97: competentes; y revocar tu autorización o solicitar la supresión de 
+lib\politica_screen.dart:98: tus datos, cuando no exista un deber legal que lo impida.
+lib\politica_screen.dart:99: 7. Uso de almacenamiento local
+lib\politica_screen.dart:100: SEREO utiliza almacenamiento local en tu dispositivo (similar a las 
+lib\politica_screen.dart:101: cookies en aplicaciones web) para mantener tu sesión activa y 
+lib\politica_screen.dart:102: recordar tus preferencias, como el tema visual. Esta información 
+lib\politica_screen.dart:103: permanece únicamente en tu dispositivo.
+lib\politica_screen.dart:104: 8. Aceptación
+lib\politica_screen.dart:105: El uso de SEREO requiere la aceptación expresa de esta política, de 
+lib\politica_screen.dart:106: acuerdo con la Ley 1581 de 2012 y sus decretos reglamentarios.
+lib\register_screen.dart:44: Selecciona tu programa académico.
+lib\register_screen.dart:52: La verificación no es correcta. Intenta de nuevo.
+lib\register_screen.dart:184: Administración de Empresas
+lib\register_screen.dart:185: Contaduría Pública
+lib\register_screen.dart:186: Zootecnia
+lib\register_screen.dart:188: Ingeniería de Sistemas y Computación
+lib\register_screen.dart:190: Ingeniería Electrónica
+lib\register_screen.dart:191: Ciencias Sociales
+lib\register_screen.dart:192: Educación Física
+lib\sos_bienestar.dart:90: Pendientes
+lib\sos_bienestar.dart:91: En proceso
+lib\sos_bienestar.dart:92: Atendidas
+lib\sos_bienestar.dart:93: Canceladas
+lib\sos_bienestar.dart:94: Todas
+lib\sos_estudiante.dart:47: No se pudo cargar tu historial.
+lib\sos_estudiante.dart:55: Cuéntanos brevemente qué necesitas.
+lib\usuarios_admin.dart:151: Todos
+lib\usuarios_admin.dart:152: Estudiantes
+lib\usuarios_admin.dart:153: Bienestar
+lib\usuarios_admin.dart:154: Admin
+lib\usuarios_admin.dart:200: ] != null ? 
+lib\usuarios_admin.dart:273: Exception: 
+lib\usuarios_admin.dart:282: Editar usuario
+lib\usuarios_admin.dart:282: Nueva cuenta

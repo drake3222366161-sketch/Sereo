@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -45,6 +47,7 @@ if (!$franja) {
 }
 
 if ((int) $franja['profesional_id'] !== (int) $profesionalId) {
+    registrarLog($pdo, 'DISPONIBILIDAD_ACCION_DENEGADA', 'disponibilidad', $profesionalId, ['franja_id' => (int) $id], 'denegado');
     http_response_code(403);
     echo json_encode(['error' => 'No puedes desactivar disponibilidad de otro profesional.']);
     exit;
@@ -76,4 +79,7 @@ if ($tieneReserva) {
 $stmt = $pdo->prepare('UPDATE disponibilidad_profesional SET disponible = 0 WHERE id = :id');
 $stmt->execute(['id' => $id]);
 
+registrarLog($pdo, 'DISPONIBILIDAD_DESACTIVADA', 'disponibilidad', $profesionalId, ['id' => (int) $id, 'fecha' => $franja['fecha'], 'hora_inicio' => $franja['hora_inicio'], 'hora_fin' => $franja['hora_fin']]);
+
 echo json_encode(['mensaje' => 'Franja desactivada.']);
+

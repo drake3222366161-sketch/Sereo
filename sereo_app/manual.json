@@ -1,0 +1,68 @@
+[
+  {"archivo": "lib/agenda_bienestar.dart", "linea": 277, "texto": "Disponibilidad - ${_soloFecha(_diaSeleccionado)}", "es": "Disponibilidad - {fecha}", "args": ["_soloFecha(_diaSeleccionado)"], "clave": "agendaBienestarDisponibilidadFecha", "en": "Availability - {fecha}"},
+  {"archivo": "lib/agenda_bienestar.dart", "linea": 321, "texto": "Citas - ${_soloFecha(_diaSeleccionado)}", "es": "Citas - {fecha}", "args": ["_soloFecha(_diaSeleccionado)"], "clave": "agendaBienestarCitasFecha", "en": "Appointments - {fecha}"},
+  {"archivo": "lib/agenda_bienestar.dart", "linea": 90, "texto": "HORA DE INICIO", "clave": "agendaBienestarHoraDeInicio", "en": "START TIME"},
+  {"archivo": "lib/agenda_bienestar.dart", "linea": 98, "texto": "HORA DE FIN", "clave": "agendaBienestarHoraDeFin", "en": "END TIME"},
+
+  {"archivo": "lib/autoevaluaciones_bienestar.dart", "linea": 87, "texto": "Todos", "clave": "filtroTodos", "en": "All"},
+  {"archivo": "lib/autoevaluaciones_bienestar.dart", "linea": 88, "texto": "Severo", "ocurrencia": 1, "clave": "nivelSevero", "en": "Severe"},
+  {"archivo": "lib/autoevaluaciones_bienestar.dart", "linea": 89, "texto": "Mod. severo", "clave": "nivelModSevero", "en": "Mod. severe"},
+  {"archivo": "lib/autoevaluaciones_bienestar.dart", "linea": 90, "texto": "Moderado", "ocurrencia": 1, "clave": "nivelModerado", "en": "Moderate"},
+  {"archivo": "lib/autoevaluaciones_bienestar.dart", "linea": 91, "texto": "Leve", "ocurrencia": 1, "clave": "nivelLeve", "en": "Mild"},
+  {"archivo": "lib/autoevaluaciones_bienestar.dart", "linea": 92, "texto": "Mínimo", "clave": "nivelMinimo", "en": "Minimal"},
+
+  {"archivo": "lib/citas_bienestar.dart", "linea": 119, "texto": "Pendientes", "clave": "filtroPendientes", "en": "Pending"},
+  {"archivo": "lib/citas_bienestar.dart", "linea": 120, "texto": "Confirmadas", "clave": "filtroConfirmadas", "en": "Confirmed"},
+  {"archivo": "lib/citas_bienestar.dart", "linea": 121, "texto": "Reagendadas", "clave": "filtroReagendadas", "en": "Rescheduled"},
+  {"archivo": "lib/citas_bienestar.dart", "linea": 122, "texto": "Atendidas", "clave": "filtroAtendidas", "en": "Attended"},
+  {"archivo": "lib/citas_bienestar.dart", "linea": 123, "texto": "Canceladas", "clave": "filtroCanceladas", "en": "Cancelled"},
+  {"archivo": "lib/citas_bienestar.dart", "linea": 124, "texto": "Todas", "clave": "filtroTodas", "en": "All"},
+
+  {"archivo": "lib/citas_estudiante.dart", "linea": 191, "texto": "Horarios disponibles - ${_soloFecha(_diaSeleccionado)}", "es": "Horarios disponibles - {fecha}", "args": ["_soloFecha(_diaSeleccionado)"], "clave": "citasEstudianteHorariosDisponiblesFecha", "en": "Available times - {fecha}"},
+  {"archivo": "lib/citas_estudiante.dart", "linea": 223, "texto": "Por asignar", "clave": "citasEstudiantePorAsignar", "en": "To be assigned"},
+  {"archivo": "lib/citas_estudiante.dart", "linea": 239, "texto": "el profesional asignado", "clave": "citasEstudianteElProfesionalAsignado", "en": "the assigned professional"},
+
+  {"archivo": "lib/disponibilidad_bienestar.dart", "linea": 57, "texto": "Completa fecha, hora inicio y hora fin.", "clave": "disponibilidadBienestarCompletaTodosLosCampos", "en": "Fill in the date, start time and end time."},
+  {"archivo": "lib/disponibilidad_bienestar.dart", "linea": 151, "texto": "Elegir fecha", "clave": "disponibilidadBienestarElegirFecha", "en": "Pick a date"},
+  {"archivo": "lib/disponibilidad_bienestar.dart", "linea": 165, "texto": "Hora inicio", "clave": "disponibilidadBienestarHoraInicio", "en": "Start time"},
+  {"archivo": "lib/disponibilidad_bienestar.dart", "linea": 173, "texto": "Hora fin", "clave": "disponibilidadBienestarHoraFin", "en": "End time"},
+  {"archivo": "lib/disponibilidad_bienestar.dart", "linea": 209, "texto": "Activa", "clave": "disponibilidadBienestarActiva", "en": "Active"},
+  {"archivo": "lib/disponibilidad_bienestar.dart", "linea": 209, "texto": "Desactivada", "clave": "disponibilidadBienestarDesactivada", "en": "Inactive"},
+
+  {"archivo": "lib/home_estudiante.dart", "linea": 96, "texto": "Tema claro", "clave": "temaClaro", "en": "Light theme"},
+  {"archivo": "lib/home_estudiante.dart", "linea": 96, "texto": "Tema oscuro", "clave": "temaOscuro", "en": "Dark theme"},
+  {"archivo": "lib/home_estudiante.dart", "linea": 178, "texto": "Diario emocional", "clave": "diarioEmocional", "en": "Emotional journal"},
+  {"archivo": "lib/home_estudiante.dart", "linea": 183, "texto": "Perfil", "clave": "perfil", "en": "Profile"},
+
+  {"archivo": "lib/home_staff.dart", "linea": 333, "texto": "Tema claro", "clave": "temaClaro", "en": "Light theme"},
+  {"archivo": "lib/home_staff.dart", "linea": 333, "texto": "Tema oscuro", "clave": "temaOscuro", "en": "Dark theme"},
+  {"archivo": "lib/home_staff.dart", "linea": 389, "texto": "Solicitudes pendientes", "clave": "homeStaffSolicitudesPendientes", "en": "Pending requests"},
+  {"archivo": "lib/home_staff.dart", "linea": 390, "texto": "Citas de hoy", "clave": "homeStaffCitasDeHoy", "en": "Today’s appointments"},
+  {"archivo": "lib/home_staff.dart", "linea": 391, "texto": "Citas esta semana", "clave": "homeStaffCitasEstaSemana", "en": "Appointments this week"},
+  {"archivo": "lib/home_staff.dart", "linea": 399, "texto": "Estudiantes", "clave": "homeStaffEstudiantes", "en": "Students"},
+  {"archivo": "lib/home_staff.dart", "linea": 400, "texto": "Bienestar", "clave": "homeStaffBienestar", "en": "Wellbeing"},
+  {"archivo": "lib/home_staff.dart", "linea": 401, "texto": "Administradores", "clave": "homeStaffAdministradores", "en": "Administrators"},
+
+  {"archivo": "lib/inactivity_guard.dart", "linea": 72, "texto": "Se cerró tu sesión por inactividad.", "clave": "inactivityGuardSesionCerradaInactividad", "en": "Your session was closed due to inactivity."},
+  {"archivo": "lib/inactivity_guard.dart", "linea": 89, "texto": "Tu sesión fue cerrada porque iniciaste sesión con esta cuenta en otro dispositivo.", "clave": "inactivityGuardSesionOtroDispositivo", "en": "Your session was closed because you signed in with this account on another device."},
+  {"archivo": "lib/inactivity_guard.dart", "linea": 181, "texto": "No se pudo verificar la contraseña.", "clave": "inactivityGuardNoSePudoVerificar", "en": "Could not verify the password."},
+
+  {"archivo": "lib/register_screen.dart", "linea": 45, "texto": "Selecciona tu programa académico.", "clave": "registerSeleccionaTuProgramaAcademico", "en": "Select your academic program."},
+  {"archivo": "lib/register_screen.dart", "linea": 53, "texto": "La verificación no es correcta. Intenta de nuevo.", "clave": "err_captcha", "en": "The verification is incorrect. Please try again."},
+
+  {"archivo": "lib/sos_bienestar.dart", "linea": 91, "texto": "Pendientes", "clave": "filtroPendientes", "en": "Pending"},
+  {"archivo": "lib/sos_bienestar.dart", "linea": 92, "texto": "En proceso", "clave": "filtroEnProceso", "en": "In progress"},
+  {"archivo": "lib/sos_bienestar.dart", "linea": 93, "texto": "Atendidas", "clave": "filtroAtendidas", "en": "Attended"},
+  {"archivo": "lib/sos_bienestar.dart", "linea": 94, "texto": "Canceladas", "clave": "filtroCanceladas", "en": "Cancelled"},
+  {"archivo": "lib/sos_bienestar.dart", "linea": 95, "texto": "Todas", "clave": "filtroTodas", "en": "All"},
+
+  {"archivo": "lib/sos_estudiante.dart", "linea": 48, "texto": "No se pudo cargar tu historial.", "clave": "sosEstudianteNoSePudoCargar", "en": "Could not load your history."},
+  {"archivo": "lib/sos_estudiante.dart", "linea": 56, "texto": "Cuéntanos brevemente qué necesitas.", "clave": "sosEstudianteCuentanosBrevemente", "en": "Tell us briefly what you need."},
+
+  {"archivo": "lib/usuarios_admin.dart", "linea": 152, "texto": "Todos", "clave": "filtroTodos", "en": "All"},
+  {"archivo": "lib/usuarios_admin.dart", "linea": 153, "texto": "Estudiantes", "clave": "homeStaffEstudiantes", "en": "Students"},
+  {"archivo": "lib/usuarios_admin.dart", "linea": 154, "texto": "Bienestar", "clave": "homeStaffBienestar", "en": "Wellbeing"},
+  {"archivo": "lib/usuarios_admin.dart", "linea": 155, "texto": "Admin", "clave": "usuariosAdminAdmin", "en": "Admin"},
+  {"archivo": "lib/usuarios_admin.dart", "linea": 283, "texto": "Editar usuario", "clave": "usuariosAdminEditarUsuario", "en": "Edit user"},
+  {"archivo": "lib/usuarios_admin.dart", "linea": 283, "texto": "Nueva cuenta", "clave": "usuariosAdminNuevaCuenta", "en": "New account"}
+]

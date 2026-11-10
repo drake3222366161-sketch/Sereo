@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'theme.dart';
+import 'api_config.dart';
+import 'package:sereo_app/l10n_ext.dart';
+import 'nivel_texto.dart';
 
 class CitasBienestarScreen extends StatefulWidget {
   final int profesionalId;
@@ -26,7 +30,7 @@ class _CitasBienestarScreenState extends State<CitasBienestarScreen> {
     setState(() => _cargando = true);
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/citas_listar.php'),
+        Uri.parse('${ApiConfig.baseUrl}/citas_listar.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'rol': 'bienestar',
@@ -46,7 +50,7 @@ class _CitasBienestarScreenState extends State<CitasBienestarScreen> {
   Future<void> _accion(int citaId, String accion, {String? nuevaFecha, String? nuevaHora}) async {
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/citas_actualizar_estado.php'),
+        Uri.parse('${ApiConfig.baseUrl}/citas_actualizar_estado.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'cita_id': citaId,
@@ -113,12 +117,12 @@ class _CitasBienestarScreenState extends State<CitasBienestarScreen> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _chipFiltro('pendiente', 'Pendientes'),
-              _chipFiltro('confirmada', 'Confirmadas'),
-              _chipFiltro('reagendada', 'Reagendadas'),
-              _chipFiltro('atendida', 'Atendidas'),
-              _chipFiltro('cancelada', 'Canceladas'),
-              _chipFiltro('todas', 'Todas'),
+              _chipFiltro('pendiente', context.t.filtroPendientes),
+              _chipFiltro('confirmada', context.t.filtroConfirmadas),
+              _chipFiltro('reagendada', context.t.filtroReagendadas),
+              _chipFiltro('atendida', context.t.filtroAtendidas),
+              _chipFiltro('cancelada', context.t.filtroCanceladas),
+              _chipFiltro('todas', context.t.filtroTodas),
             ],
           ),
         ),
@@ -127,7 +131,7 @@ class _CitasBienestarScreenState extends State<CitasBienestarScreen> {
         if (_cargando) const Expanded(child: Center(child: CircularProgressIndicator())),
 
         if (!_cargando && _citas.isEmpty)
-          const Expanded(child: Center(child: Text('No hay citas en este filtro.'))),
+          Expanded(child: Center(child: Text(context.t.citasBienestarNoHayCitasEn))),
 
         if (!_cargando && _citas.isNotEmpty)
           Expanded(
@@ -142,13 +146,27 @@ class _CitasBienestarScreenState extends State<CitasBienestarScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(c['estudiante_nombre'], style: const TextStyle(fontWeight: FontWeight.w600)),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(c['estudiante_nombre'],
+                                  style: const TextStyle(fontWeight: FontWeight.w600)),
+                            ),
+                            Chip(
+                              label: Text(textoEstadoL10n(context, c['estado']),
+                                  style: const TextStyle(color: Colors.white, fontSize: 11)),
+                              backgroundColor: colorEstado(c['estado']),
+                              padding: EdgeInsets.zero,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          ],
+                        ),
                         if (c['programa_academico'] != null)
                           Text(c['programa_academico'],
                               style: const TextStyle(fontSize: 12, color: Colors.black54)),
                         const SizedBox(height: 4),
-                        Text('Fecha: ${c['fecha_hora']}'),
-                        if (c['motivo'] != null) Text('Motivo: ${c['motivo']}'),
+                        Text(context.t.citaFecha(c['fecha_hora'])),
+                        if (c['motivo'] != null) Text(context.t.citaMotivo(c['motivo'])),
                         const SizedBox(height: 10),
                         Wrap(
                           spacing: 8,
@@ -156,21 +174,21 @@ class _CitasBienestarScreenState extends State<CitasBienestarScreen> {
                             if (c['estado'] == 'pendiente')
                               ElevatedButton(
                                 onPressed: () => _accion(c['id'], 'confirmar'),
-                                child: const Text('Confirmar'),
+                                child: Text(context.t.agendaBienestarConfirmar),
                               ),
                             if (c['estado'] == 'confirmada')
                               ElevatedButton(
                                 onPressed: () => _accion(c['id'], 'atendida'),
-                                child: const Text('Marcar atendida'),
+                                child: Text(context.t.agendaBienestarMarcarAtendida),
                               ),
                             if (c['estado'] == 'pendiente' || c['estado'] == 'confirmada') ...[
                               OutlinedButton(
                                 onPressed: () => _abrirDialogoReagendar(c['id']),
-                                child: const Text('Reagendar'),
+                                child: Text(context.t.agendaBienestarReagendar),
                               ),
                               OutlinedButton(
                                 onPressed: () => _accion(c['id'], 'cancelar'),
-                                child: const Text('Cancelar'),
+                                child: Text(context.t.agendaBienestarCancelar),
                               ),
                             ],
                           ],

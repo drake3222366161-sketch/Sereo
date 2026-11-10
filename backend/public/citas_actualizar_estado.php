@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -53,40 +55,47 @@ switch ($accion) {
         $esProfesional = (int) $cita['profesional_id'] === (int) $usuarioId;
 
         if (!$esDueno && !$esProfesional) {
+            registrarLog($pdo, 'CITA_ACCION_DENEGADA', 'citas', $usuarioId, ['cita_id' => (int) $citaId, 'accion' => 'cancelar'], 'denegado');
             http_response_code(403);
             echo json_encode(['error' => 'No tienes permiso para cancelar esta cita.']);
             exit;
         }
         $stmt = $pdo->prepare("UPDATE citas SET estado = 'cancelada' WHERE id = :id");
         $stmt->execute(['id' => $citaId]);
+        registrarLog($pdo, 'CITA_CANCELADA', 'citas', $usuarioId, ['cita_id' => (int) $citaId, 'estado_anterior' => $cita['estado']]);
         echo json_encode(['mensaje' => 'Cita cancelada.']);
         break;
 
     case 'confirmar':
         // Solo el profesional asignado puede confirmar
         if ((int) $cita['profesional_id'] !== (int) $usuarioId) {
+            registrarLog($pdo, 'CITA_ACCION_DENEGADA', 'citas', $usuarioId, ['cita_id' => (int) $citaId, 'accion' => 'confirmar'], 'denegado');
             http_response_code(403);
             echo json_encode(['error' => 'Solo el profesional asignado puede confirmar esta cita.']);
             exit;
         }
         $stmt = $pdo->prepare("UPDATE citas SET estado = 'confirmada' WHERE id = :id");
         $stmt->execute(['id' => $citaId]);
+        registrarLog($pdo, 'CITA_CONFIRMADA', 'citas', $usuarioId, ['cita_id' => (int) $citaId, 'estado_anterior' => $cita['estado']]);
         echo json_encode(['mensaje' => 'Cita confirmada.']);
         break;
 
     case 'atendida':
         if ((int) $cita['profesional_id'] !== (int) $usuarioId) {
+            registrarLog($pdo, 'CITA_ACCION_DENEGADA', 'citas', $usuarioId, ['cita_id' => (int) $citaId, 'accion' => 'atendida'], 'denegado');
             http_response_code(403);
             echo json_encode(['error' => 'Solo el profesional asignado puede marcarla como atendida.']);
             exit;
         }
         $stmt = $pdo->prepare("UPDATE citas SET estado = 'atendida' WHERE id = :id");
         $stmt->execute(['id' => $citaId]);
+        registrarLog($pdo, 'CITA_ATENDIDA', 'citas', $usuarioId, ['cita_id' => (int) $citaId, 'estado_anterior' => $cita['estado']]);
         echo json_encode(['mensaje' => 'Cita marcada como atendida.']);
         break;
 
     case 'reagendar':
         if ((int) $cita['profesional_id'] !== (int) $usuarioId) {
+            registrarLog($pdo, 'CITA_ACCION_DENEGADA', 'citas', $usuarioId, ['cita_id' => (int) $citaId, 'accion' => 'reagendar'], 'denegado');
             http_response_code(403);
             echo json_encode(['error' => 'Solo el profesional asignado puede reagendar esta cita.']);
             exit;
@@ -125,6 +134,7 @@ switch ($accion) {
             "UPDATE citas SET fecha_hora = TIMESTAMP(:fecha, :hora), estado = 'reagendada' WHERE id = :id"
         );
         $stmt->execute(['fecha' => $nuevaFecha, 'hora' => $nuevaHora, 'id' => $citaId]);
+        registrarLog($pdo, 'CITA_REAGENDADA', 'citas', $usuarioId, ['cita_id' => (int) $citaId, 'fecha_hora_anterior' => $cita['fecha_hora'], 'nueva_fecha' => $nuevaFecha, 'nueva_hora' => $nuevaHora]);
         echo json_encode(['mensaje' => 'Cita reagendada.']);
         break;
 
@@ -132,3 +142,4 @@ switch ($accion) {
         http_response_code(400);
         echo json_encode(['error' => 'Acción no reconocida.']);
 }
+

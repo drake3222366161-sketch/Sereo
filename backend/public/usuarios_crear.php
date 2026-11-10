@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+require_once __DIR__ . '/../lib/password_policy.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -30,6 +33,7 @@ $nombre = trim($datos['nombre_completo'] ?? '');
 $correo = trim(strtolower($datos['correo'] ?? ''));
 $contrasena = $datos['contrasena'] ?? '';
 $rol = $datos['rol'] ?? '';
+$adminId = $datos['admin_id'] ?? null; // quién crea la cuenta (para el log)
 
 if (!$nombre || !$correo || !$contrasena || !$rol) {
     http_response_code(400);
@@ -40,6 +44,7 @@ if (!$nombre || !$correo || !$contrasena || !$rol) {
 // El admin SOLO puede crear cuentas de bienestar o admin.
 // Los estudiantes se autoregistran, nunca se crean desde aquí.
 if (!in_array($rol, ['bienestar', 'admin'])) {
+    registrarLog($pdo, 'USUARIO_CREACION_DENEGADA', 'usuarios', $adminId, ['rol_solicitado' => $rol], 'denegado');
     http_response_code(403);
     echo json_encode(['error' => 'Desde aquí solo se pueden crear cuentas de Bienestar o Admin.']);
     exit;
@@ -51,10 +56,10 @@ if (!str_ends_with($correo, '@ucundinamarca.edu.co')) {
     exit;
 }
 
-if (strlen($contrasena) < 8) {
-    http_response_code(400);
-    echo json_encode(['error' => 'La contraseña debe tener al menos 8 caracteres.']);
-    exit;
+$fallos = validarPoliticaContrasena($contrasena, $correo, $nombre);
+if ($fallos) {
+    registrarLog($pdo, 'USUARIO_CREACION_DENEGADA', 'usuarios', $adminId, ['motivo' => 'contrasena_no_cumple_politica', 'requisitos_fallidos' => $fallos], 'denegado');
+    responderPoliticaContrasenaInvalida($fallos);
 }
 
 $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE correo = :correo LIMIT 1');
@@ -78,4 +83,8 @@ $stmt->execute([
     'rol' => $rol,
 ]);
 
-echo json_encode(['mensaje' => 'Cuenta creada correctamente.', 'id' => $pdo->lastInsertId()]);
+$nuevoId = $pdo->lastInsertId();
+registrarLog($pdo, 'USUARIO_CREADO', 'usuarios', $adminId, ['usuario_creado_id' => (int) $nuevoId, 'correo' => $correo, 'rol' => $rol]);
+
+echo json_encode(['mensaje' => 'Cuenta creada correctamente.', 'id' => $nuevoId]);
+

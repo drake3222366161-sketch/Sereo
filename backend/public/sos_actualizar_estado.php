@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -53,6 +55,7 @@ if (!$solicitud) {
 //    y solo si sigue en estado 'pendiente'
 if ($nuevoEstado === 'cancelada') {
     if ((int) $solicitud['estudiante_id'] !== (int) $usuarioQueCambia) {
+        registrarLog($pdo, 'SOS_ACCION_DENEGADA', 'sos', $usuarioQueCambia, ['solicitud_id' => (int) $solicitudId, 'intento' => 'cancelar_ajena'], 'denegado');
         http_response_code(403);
         echo json_encode(['error' => 'No puedes cancelar una solicitud que no es tuya.']);
         exit;
@@ -91,4 +94,7 @@ $stmt->execute([
     'cambiado_por' => $usuarioQueCambia,
 ]);
 
+registrarLog($pdo, 'SOS_ESTADO_CAMBIADO', 'sos', $usuarioQueCambia, ['solicitud_id' => (int) $solicitudId, 'estado_anterior' => $estadoAnterior, 'estado_nuevo' => $nuevoEstado]);
+
 echo json_encode(['mensaje' => 'Estado actualizado correctamente.']);
+

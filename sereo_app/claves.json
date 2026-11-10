@@ -1,0 +1,20 @@
+{
+  "opcionNunca": {"es": "Nunca", "en": "Not at all"},
+  "opcionVariosDias": {"es": "Varios días", "en": "Several days"},
+  "opcionMasDeLaMitad": {"es": "Más de la mitad de los días", "en": "More than half the days"},
+  "opcionCasiTodos": {"es": "Casi todos los días", "en": "Nearly every day"},
+  "nivelModeradamenteSevero": {"es": "Moderadamente severo", "en": "Moderately severe"},
+  "phq9Pregunta1": {"es": "Poco interés o placer en hacer las cosas", "en": "Little interest or pleasure in doing things"},
+  "phq9Pregunta2": {"es": "Sentirse desanimado(a), deprimido(a) o sin esperanza", "en": "Feeling down, depressed, or hopeless"},
+  "phq9Pregunta3": {"es": "Dificultad para dormir o permanecer dormido(a), o dormir demasiado", "en": "Trouble falling or staying asleep, or sleeping too much"},
+  "phq9Pregunta4": {"es": "Sentirse cansado(a) o tener poca energía", "en": "Feeling tired or having little energy"},
+  "phq9Pregunta5": {"es": "Poco apetito o comer en exceso", "en": "Poor appetite or overeating"},
+  "phq9Pregunta6": {"es": "Sentirse mal consigo mismo(a), o sentir que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia", "en": "Feeling bad about yourself, or that you are a failure or have let yourself or your family down"},
+  "phq9Pregunta7": {"es": "Dificultad para concentrarse en cosas como leer el periódico o ver televisión", "en": "Trouble concentrating on things, such as reading the newspaper or watching television"},
+  "phq9Pregunta8": {"es": "Moverse o hablar tan lentamente que otras personas podrían notarlo, o lo contrario: estar tan inquieto(a) o agitado(a) que se ha estado moviendo mucho más de lo normal", "en": "Moving or speaking so slowly that other people could have noticed, or the opposite: being so fidgety or restless that you have been moving around a lot more than usual"},
+  "phq9Pregunta9": {"es": "Pensamientos de que estaría mejor muerto(a) o de hacerse daño de alguna manera", "en": "Thoughts that you would be better off dead, or of hurting yourself in some way"},
+  "citasEstudianteVasASolicitar": {
+    "es": "Vas a solicitar una cita con {profesional}\n{fecha} a las {hora}.\n\nBienestar deberá confirmarla.",
+    "en": "You are about to request an appointment with {profesional}\n{fecha} at {hora}.\n\nWellbeing will need to confirm it."
+  }
+}

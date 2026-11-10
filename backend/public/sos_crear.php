@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../lib/audit.php';
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -46,7 +48,12 @@ $stmt->execute([
     'telefono' => $telefono ?: null,
 ]);
 
+$solicitudId = $pdo->lastInsertId();
+// Solo el hecho: la nota y el teléfono son datos sensibles y NO van al log
+registrarLog($pdo, 'SOS_CREADO', 'sos', $estudianteId, ['solicitud_id' => (int) $solicitudId]);
+
 echo json_encode([
     'mensaje' => 'Solicitud enviada. Bienestar la atenderá pronto.',
-    'solicitud_id' => $pdo->lastInsertId(),
+    'solicitud_id' => $solicitudId,
 ]);
+

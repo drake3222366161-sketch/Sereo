@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:table_calendar/table_calendar.dart';
 import 'theme.dart';
+import 'api_config.dart';
+import 'package:sereo_app/l10n_ext.dart';
+import 'nivel_texto.dart';
 
 class CitasEstudianteScreen extends StatefulWidget {
   final int estudianteId;
@@ -35,7 +38,7 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
   Future<void> _cargarFranjas() async {
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/disponibilidad_listar.php'),
+        Uri.parse('${ApiConfig.baseUrl}/disponibilidad_listar.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'modo': 'libres'}),
       );
@@ -49,7 +52,7 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
   Future<void> _cargarMisCitas() async {
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/citas_listar.php'),
+        Uri.parse('${ApiConfig.baseUrl}/citas_listar.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'rol': 'estudiante', 'estudiante_id': widget.estudianteId}),
       );
@@ -72,15 +75,15 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Confirmar cita'),
-        content: Text(
-          'Vas a solicitar una cita con ${franja['profesional_nombre']}\n'
-          '${franja['fecha']} a las ${franja['hora_inicio']}.\n\n'
-          'Bienestar deberá confirmarla.',
-        ),
+        title: Text(context.t.citasEstudianteConfirmarCita),
+        content: Text(context.t.citasEstudianteVasASolicitar(
+          franja['profesional_nombre'],
+          franja['fecha'],
+          franja['hora_inicio'],
+        )),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
-          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('Solicitar')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(context.t.agendaBienestarCancelar)),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text(context.t.citasEstudianteSolicitar)),
         ],
       ),
     );
@@ -89,7 +92,7 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
 
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/citas_crear.php'),
+        Uri.parse('${ApiConfig.baseUrl}/citas_crear.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'estudiante_id': widget.estudianteId,
@@ -115,10 +118,28 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
     }
   }
 
-  Future<void> _cancelarCita(int citaId) async {
+  Future<void> _cancelarCita(int citaId, String profesional, String fechaHora) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(context.t.agendaBienestarCancelarEstaCita),
+        content: Text(context.t.citasEstudianteVasACancelarTu(profesional, fechaHora)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(context.t.agendaBienestarNoVolver)),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: colorSos, foregroundColor: Colors.white),
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(context.t.agendaBienestarSiCancelar),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar != true) return;
+
     try {
       final respuesta = await http.post(
-        Uri.parse('http://localhost/sereo/backend/public/citas_actualizar_estado.php'),
+        Uri.parse('${ApiConfig.baseUrl}/citas_actualizar_estado.php'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'cita_id': citaId,
@@ -134,29 +155,12 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
     }
   }
 
-  Color _colorEstado(String estado) {
-    switch (estado) {
-      case 'pendiente':
-        return const Color(0xFFB98900);
-      case 'confirmada':
-        return primarioOscuro;
-      case 'reagendada':
-        return Colors.deepPurple;
-      case 'atendida':
-        return const Color(0xFF2E7D32);
-      case 'cancelada':
-        return Colors.grey;
-      default:
-        return Colors.grey;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final franjasHoy = _franjasDelDia(_diaSeleccionado);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Agendar cita')),
+      appBar: AppBar(title: Text(context.t.citasEstudianteAgendarCita)),
       body: _cargando
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -165,7 +169,12 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   TableCalendar(
-                    locale: 'es_ES',
+                    locale: Localizations.localeOf(context).toString(),
+                    availableCalendarFormats: {
+                      CalendarFormat.month: context.t.calendarioMes,
+                      CalendarFormat.twoWeeks: context.t.calendarioDosSemanas,
+                      CalendarFormat.week: context.t.calendarioSemana,
+                    },
                     firstDay: DateTime.now(),
                     lastDay: DateTime.now().add(const Duration(days: 180)),
                     focusedDay: _mesEnfocado,
@@ -185,12 +194,12 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  Text('Horarios disponibles - ${_soloFecha(_diaSeleccionado)}',
+                  Text(context.t.citasEstudianteHorariosDisponiblesFecha(_soloFecha(_diaSeleccionado)),
                       style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
                   const SizedBox(height: 10),
 
                   if (franjasHoy.isEmpty)
-                    const Text('No hay horarios libres este día.',
+                    Text(context.t.citasEstudianteNoHayHorariosLibres,
                         style: TextStyle(color: textoSecundario)),
 
                   Wrap(
@@ -207,38 +216,41 @@ class _CitasEstudianteScreenState extends State<CitasEstudianteScreen> {
                   ),
 
                   const SizedBox(height: 28),
-                  const Text('Mis citas', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                  Text(context.t.citasEstudianteMisCitas, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
                   const SizedBox(height: 10),
 
                   if (_misCitas.isEmpty)
-                    const Text('Aún no tienes citas agendadas.', style: TextStyle(color: textoSecundario)),
+                    Text(context.t.citasEstudianteAunNoTienesCitas, style: TextStyle(color: textoSecundario)),
 
                   for (final c in _misCitas)
                     Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
-                        title: Text(c['profesional_nombre'] ?? 'Por asignar'),
+                        title: Text(c['profesional_nombre'] ?? context.t.citasEstudiantePorAsignar),
                         subtitle: Text(c['fecha_hora']),
                         trailing: (c['estado'] == 'pendiente' || c['estado'] == 'confirmada')
                             ? Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Chip(
-                                    label: Text(c['estado'],
+                                    label: Text(textoEstadoL10n(context, c['estado']),
                                         style: const TextStyle(color: Colors.white, fontSize: 11)),
-                                    backgroundColor: _colorEstado(c['estado']),
+                                    backgroundColor: colorEstado(c['estado']),
                                     padding: EdgeInsets.zero,
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.close, size: 18),
-                                    onPressed: () => _cancelarCita(c['id']),
+                                    onPressed: () => _cancelarCita(
+                                        c['id'],
+                                        c['profesional_nombre'] ?? context.t.citasEstudianteElProfesionalAsignado,
+                                        c['fecha_hora']),
                                   ),
                                 ],
                               )
                             : Chip(
-                                label: Text(c['estado'],
+                                label: Text(textoEstadoL10n(context, c['estado']),
                                     style: const TextStyle(color: Colors.white, fontSize: 11)),
-                                backgroundColor: _colorEstado(c['estado']),
+                                backgroundColor: colorEstado(c['estado']),
                               ),
                       ),
                     ),

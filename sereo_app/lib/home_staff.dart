@@ -4,9 +4,15 @@ import 'package:http/http.dart' as http;
 import 'theme.dart';
 import 'login_screen.dart';
 import 'sos_bienestar.dart';
-import 'disponibilidad_bienestar.dart';
-import 'citas_bienestar.dart';
+import 'agenda_bienestar.dart';
+import 'autoevaluaciones_bienestar.dart';
+import 'reportes_bienestar.dart';
 import 'usuarios_admin.dart';
+import 'backup_restore_admin.dart';
+import 'auditoria_admin.dart';
+import 'api_config.dart';
+import 'package:sereo_app/l10n_ext.dart';
+import 'locale_controller.dart';
 
 const fondoSidebar = Color(0xFF04342C);
 const verdeItemActivo = Color(0xFF0F6E56);
@@ -31,7 +37,6 @@ class HomeStaff extends StatefulWidget {
 class _HomeStaffState extends State<HomeStaff> {
   int _indiceSeleccionado = 0;
 
-  // Datos reales del dashboard
   bool _cargandoDashboard = true;
   int _sosPendientes = 0;
   int _citasHoy = 0;
@@ -52,7 +57,7 @@ class _HomeStaffState extends State<HomeStaff> {
     try {
       if (widget.rol == 'bienestar') {
         final respuesta = await http.post(
-          Uri.parse('http://localhost/sereo/backend/public/dashboard_bienestar.php'),
+          Uri.parse('${ApiConfig.baseUrl}/dashboard_bienestar.php'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({}),
         );
@@ -63,9 +68,8 @@ class _HomeStaffState extends State<HomeStaff> {
           _citasSemana = datos['citas_semana'] ?? 0;
         });
       } else {
-        // Admin: contamos usuarios por rol reutilizando el listado que ya existe
         final respuesta = await http.post(
-          Uri.parse('http://localhost/sereo/backend/public/usuarios_listar.php'),
+          Uri.parse('${ApiConfig.baseUrl}/usuarios_listar.php'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({}),
         );
@@ -78,7 +82,7 @@ class _HomeStaffState extends State<HomeStaff> {
         });
       }
     } catch (e) {
-      // si falla, el dashboard queda en 0 en vez de romper la pantalla
+      // el dashboard queda en 0 en vez de romper la pantalla
     } finally {
       if (mounted) setState(() => _cargandoDashboard = false);
     }
@@ -86,21 +90,34 @@ class _HomeStaffState extends State<HomeStaff> {
 
   List<_ItemMenu> get _itemsMenu {
     if (widget.rol == 'admin') {
-      return const [
-        _ItemMenu(icono: Icons.dashboard_outlined, titulo: 'Dashboard'),
-        _ItemMenu(icono: Icons.people_outline, titulo: 'Usuarios'),
-        _ItemMenu(icono: Icons.settings_outlined, titulo: 'Configuración'),
+      return [
+        _ItemMenu(icono: Icons.dashboard_outlined, titulo: context.t.homeStaffDashboard),
+        _ItemMenu(icono: Icons.people_outline, titulo: context.t.homeStaffUsuarios),
+        _ItemMenu(icono: Icons.fact_check_outlined, titulo: tituloAuditoria(context)),
+        _ItemMenu(icono: Icons.settings_outlined, titulo: context.t.homeStaffConfiguracion),
       ];
     }
-    return const [
-      _ItemMenu(icono: Icons.dashboard_outlined, titulo: 'Dashboard'),
-      _ItemMenu(icono: Icons.error_outline, titulo: 'Solicitudes'),
-      _ItemMenu(icono: Icons.calendar_today_outlined, titulo: 'Agenda'),
-      _ItemMenu(icono: Icons.bar_chart_outlined, titulo: 'Reportes'),
+    return [
+      _ItemMenu(icono: Icons.dashboard_outlined, titulo: context.t.homeStaffDashboard),
+      _ItemMenu(icono: Icons.error_outline, titulo: context.t.homeStaffSolicitudes),
+      _ItemMenu(icono: Icons.checklist_outlined, titulo: context.t.homeStaffAutoevaluaciones),
+      _ItemMenu(icono: Icons.calendar_today_outlined, titulo: context.t.homeStaffAgenda),
+      _ItemMenu(icono: Icons.bar_chart_outlined, titulo: context.t.homeStaffReportes),
     ];
   }
 
-  void _cerrarSesion() {
+  Future<void> _cerrarSesion() async {
+    try {
+      await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/cerrar_sesion.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'usuario_id': widget.usuarioId}),
+      );
+    } catch (e) {
+      // si falla por conexión, igual dejamos salir a la persona
+    }
+
+    if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const LoginScreen()),
       (route) => false,
@@ -122,7 +139,7 @@ class _HomeStaffState extends State<HomeStaff> {
               children: [
                 Text(tituloSeccion, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                 IconButton(
-                  tooltip: 'Actualizar',
+                  tooltip: context.t.homeStaffActualizar,
                   icon: const Icon(Icons.refresh),
                   onPressed: _cargarDashboard,
                 ),
@@ -137,7 +154,7 @@ class _HomeStaffState extends State<HomeStaff> {
       );
     }
 
-    // Solicitudes SOS: solo existe para bienestar (índice 1)
+    // Solicitudes SOS: solo bienestar (índice 1)
     if (widget.rol == 'bienestar' && _indiceSeleccionado == 1) {
       return Padding(
         padding: const EdgeInsets.all(24),
@@ -152,7 +169,7 @@ class _HomeStaffState extends State<HomeStaff> {
       );
     }
 
-    // Usuarios: solo para admin (índice 1)
+    // Usuarios: solo admin (índice 1)
     if (widget.rol == 'admin' && _indiceSeleccionado == 1) {
       return Padding(
         padding: const EdgeInsets.all(24),
@@ -167,36 +184,77 @@ class _HomeStaffState extends State<HomeStaff> {
       );
     }
 
-    // Agenda: dos pestañas -> Disponibilidad y Citas (solo bienestar, índice 2)
+    // Auditoría (logs del sistema): solo admin (índice 2)
+    if (widget.rol == 'admin' && _indiceSeleccionado == 2) {
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tituloSeccion, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 16),
+            Expanded(child: AuditoriaAdminScreen(adminId: widget.usuarioId)),
+          ],
+        ),
+      );
+    }
+
+    // Configuración (backup/restauración): solo admin (índice 3)
+    if (widget.rol == 'admin' && _indiceSeleccionado == 3) {
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tituloSeccion, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 16),
+            Expanded(child: BackupRestoreAdminScreen(adminId: widget.usuarioId)),
+          ],
+        ),
+      );
+    }
+
+    // Autoevaluaciones: solo bienestar (índice 2) - dato sensible
     if (widget.rol == 'bienestar' && _indiceSeleccionado == 2) {
-      return DefaultTabController(
-        length: 2,
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(tituloSeccion, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 12),
-              const TabBar(
-                isScrollable: true,
-                labelColor: verdeItemActivo,
-                tabs: [
-                  Tab(text: 'Mi disponibilidad'),
-                  Tab(text: 'Citas'),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    DisponibilidadBienestarScreen(profesionalId: widget.usuarioId),
-                    CitasBienestarScreen(profesionalId: widget.usuarioId),
-                  ],
-                ),
-              ),
-            ],
-          ),
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tituloSeccion, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 16),
+            const Expanded(child: AutoevaluacionesBienestarScreen()),
+          ],
+        ),
+      );
+    }
+
+    // Agenda: calendario unificado - solo bienestar (índice 3)
+    if (widget.rol == 'bienestar' && _indiceSeleccionado == 3) {
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tituloSeccion, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 16),
+            Expanded(child: AgendaBienestarScreen(profesionalId: widget.usuarioId)),
+          ],
+        ),
+      );
+    }
+
+    // Reportes: exportar CSV/PDF - solo bienestar (índice 4)
+    if (widget.rol == 'bienestar' && _indiceSeleccionado == 4) {
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tituloSeccion, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 16),
+            Expanded(child: ReportesBienestarScreen(usuarioId: widget.usuarioId)),
+          ],
         ),
       );
     }
@@ -211,7 +269,7 @@ class _HomeStaffState extends State<HomeStaff> {
           const SizedBox(height: 20),
           Expanded(
             child: Center(
-              child: Text('Este módulo está en construcción',
+              child: Text(context.t.homeStaffEsteModuloEstaEn,
                   style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
             ),
           ),
@@ -232,9 +290,9 @@ class _HomeStaffState extends State<HomeStaff> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  child: Text('SEREO',
+                  child: Text(context.t.appName,
                       style: TextStyle(color: verdeTextoInactivo, fontWeight: FontWeight.w600, fontSize: 16)),
                 ),
                 const SizedBox(height: 8),
@@ -271,7 +329,26 @@ class _HomeStaffState extends State<HomeStaff> {
                   ),
                 const Spacer(),
 
-                // Botón de tema claro/oscuro
+                PopupMenuButton<String>(
+                  tooltip: context.t.language,
+                  onSelected: (codigo) => cambiarIdioma(codigo),
+                  itemBuilder: (_) => const [
+                    PopupMenuItem(value: 'es', child: Text('Español')),
+                    PopupMenuItem(value: 'en', child: Text('English')),
+                  ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.language, size: 18, color: verdeTextoInactivo),
+                        const SizedBox(width: 10),
+                        Text(context.t.language,
+                            style: const TextStyle(fontSize: 13, color: verdeTextoInactivo)),
+                      ],
+                    ),
+                  ),
+                ),
+
                 ValueListenableBuilder<ThemeMode>(
                   valueListenable: temaActual,
                   builder: (context, modo, _) {
@@ -291,7 +368,7 @@ class _HomeStaffState extends State<HomeStaff> {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                modo == ThemeMode.dark ? 'Tema claro' : 'Tema oscuro',
+                                modo == ThemeMode.dark ? context.t.temaClaro : context.t.temaOscuro,
                                 style: const TextStyle(fontSize: 13, color: verdeTextoInactivo),
                               ),
                             ],
@@ -307,13 +384,13 @@ class _HomeStaffState extends State<HomeStaff> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(6),
                     onTap: _cerrarSesion,
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       child: Row(
                         children: [
                           Icon(Icons.logout, size: 18, color: verdeTextoInactivo),
                           SizedBox(width: 10),
-                          Text('Cerrar sesión', style: TextStyle(fontSize: 13, color: verdeTextoInactivo)),
+                          Text(context.t.homeEstudianteCerrarSesion, style: TextStyle(fontSize: 13, color: verdeTextoInactivo)),
                         ],
                       ),
                     ),
@@ -347,20 +424,19 @@ class _HomeStaffState extends State<HomeStaff> {
         spacing: 12,
         runSpacing: 12,
         children: [
-          _tarjetaMetrica('Solicitudes pendientes', '$_sosPendientes', Icons.error_outline),
-          _tarjetaMetrica('Citas de hoy', '$_citasHoy', Icons.today_outlined),
-          _tarjetaMetrica('Citas esta semana', '$_citasSemana', Icons.calendar_view_week_outlined),
+          _tarjetaMetrica(context.t.homeStaffSolicitudesPendientes, '$_sosPendientes', Icons.error_outline),
+          _tarjetaMetrica(context.t.homeStaffCitasDeHoy, '$_citasHoy', Icons.today_outlined),
+          _tarjetaMetrica(context.t.homeStaffCitasEstaSemana, '$_citasSemana', Icons.calendar_view_week_outlined),
         ],
       );
     }
-    // admin
     return Wrap(
       spacing: 12,
       runSpacing: 12,
       children: [
-        _tarjetaMetrica('Estudiantes', '$_totalEstudiantes', Icons.school_outlined),
-        _tarjetaMetrica('Bienestar', '$_totalBienestar', Icons.favorite_outline),
-        _tarjetaMetrica('Administradores', '$_totalAdmin', Icons.admin_panel_settings_outlined),
+        _tarjetaMetrica(context.t.homeStaffEstudiantes, '$_totalEstudiantes', Icons.school_outlined),
+        _tarjetaMetrica(context.t.usuariosAdminBienestar, '$_totalBienestar', Icons.favorite_outline),
+        _tarjetaMetrica(context.t.homeStaffAdministradores, '$_totalAdmin', Icons.admin_panel_settings_outlined),
       ],
     );
   }
@@ -371,8 +447,6 @@ class _HomeStaffState extends State<HomeStaff> {
       width: 180,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        // En vez de un color fijo (blanco), usamos un color que el propio
-        // tema define según sea claro u oscuro - así siempre contrasta bien.
         color: colores.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
       ),

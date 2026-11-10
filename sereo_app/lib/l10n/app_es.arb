@@ -1,0 +1,419 @@
+{
+  "@@locale": "es",
+  "appName": "SEREO",
+  "login": "Iniciar sesión",
+  "register": "Registrarse",
+  "email": "Correo",
+  "password": "Contraseña",
+  "sos": "Ayuda SOS",
+  "appointments": "Citas",
+  "language": "Idioma",
+  "welcomeUser": "Bienvenido, {name}",
+  "@welcomeUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "err_invalid_credentials": "Correo o contraseña incorrectos",
+  "appSubtitle": "Acompañamiento psicológico universitario",
+  "institutionalEmail": "Correo institucional",
+  "emailHint": "usuario",
+  "noAccount": "¿No tienes cuenta?",
+  "signUpLink": "Regístrate",
+  "studentsOnlyNote": "Solo estudiantes pueden registrarse aquí. El personal de Bienestar y Administración recibe su cuenta directamente.",
+  "err_captcha": "La verificación no es correcta. Intenta de nuevo.",
+  "err_connection": "Error de conexión: {detail}",
+  "@err_connection": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "agendaBienestarDesactivarEstaFranja": "¿Desactivar esta franja?",
+  "agendaBienestarVasADesactivarLa": "Vas a desactivar la disponibilidad del {fecha} de {horaInicio} a {horaFin}.\n\nYa no aparecerá como opción para que los estudiantes agenden citas ahí, pero quedará registrada en el historial.",
+  "@agendaBienestarVasADesactivarLa": {
+    "placeholders": {
+      "fecha": {
+        "type": "Object"
+      },
+      "horaInicio": {
+        "type": "Object"
+      },
+      "horaFin": {
+        "type": "Object"
+      }
+    }
+  },
+  "agendaBienestarCancelar": "Cancelar",
+  "agendaBienestarSiDesactivar": "Sí, desactivar",
+  "agendaBienestarCancelarEstaCita": "¿Cancelar esta cita?",
+  "agendaBienestarVasACancelarLa": "Vas a cancelar la cita de {estudianteNombre} ({fechaHora}).",
+  "@agendaBienestarVasACancelarLa": {
+    "placeholders": {
+      "estudianteNombre": {
+        "type": "Object"
+      },
+      "fechaHora": {
+        "type": "Object"
+      }
+    }
+  },
+  "agendaBienestarNoVolver": "No, volver",
+  "agendaBienestarSiCancelar": "Sí, cancelar",
+  "agendaBienestarAgregar": "Agregar",
+  "agendaBienestarNoHasDefinidoDisponibilidad": "No has definido disponibilidad este día.",
+  "agendaBienestarDesactivar": "Desactivar",
+  "agendaBienestarNoTienesCitasEste": "No tienes citas este día.",
+  "agendaBienestarConfirmar": "Confirmar",
+  "agendaBienestarMarcarAtendida": "Marcar atendida",
+  "agendaBienestarReagendar": "Reagendar",
+  "autoevaluacionEstudianteRespondeTodasLasPreguntas": "Responde todas las preguntas antes de continuar.",
+  "autoevaluacionEstudianteErrorDeConexion": "Error de conexión: {e}",
+  "@autoevaluacionEstudianteErrorDeConexion": {
+    "placeholders": {
+      "e": {
+        "type": "Object"
+      }
+    }
+  },
+  "autoevaluacionEstudianteResultadoDeTuAutoevaluacion": "Resultado de tu autoevaluación",
+  "autoevaluacionEstudiantePuntaje27": "Puntaje: {puntaje} / 27",
+  "@autoevaluacionEstudiantePuntaje27": {
+    "placeholders": {
+      "puntaje": {
+        "type": "Object"
+      }
+    }
+  },
+  "autoevaluacionEstudianteNivel": "Nivel: {clasificacion}",
+  "@autoevaluacionEstudianteNivel": {
+    "placeholders": {
+      "clasificacion": {
+        "type": "Object"
+      }
+    }
+  },
+  "autoevaluacionEstudianteUnaDeTusRespuestas": "Una de tus respuestas indica que podrías estar pasando por un momento difícil. No estás solo(a) - te recomendamos hablar con Bienestar Universitario lo antes posible, o usar el botón de Solicitud prioritaria (SOS) desde la pantalla principal.",
+  "autoevaluacionEstudianteEsteResultadoEsUn": "Este resultado es un tamizaje, no un diagnóstico. Si sientes que necesitas apoyo, Bienestar Universitario está disponible para ti.",
+  "autoevaluacionEstudianteEntendido": "Entendido",
+  "autoevaluacionEstudianteAutoevaluacion": "Autoevaluación",
+  "autoevaluacionEstudiantePhq9": "PHQ-9",
+  "autoevaluacionEstudianteTestBreveDeTamizaje": "Test breve de tamizaje, usado ampliamente en entornos clínicos para identificar señales de ánimo bajo en las últimas 2 semanas. Toma menos de 3 minutos.",
+  "autoevaluacionEstudianteComenzarAutoevaluacion": "Comenzar autoevaluación",
+  "autoevaluacionEstudianteMiHistorial": "Mi historial",
+  "autoevaluacionEstudianteAunNoHasRealizado": "Aún no has realizado ninguna autoevaluación.",
+  "autoevaluacionEstudianteDuranteLasUltimas2": "Durante las últimas 2 semanas, ¿con qué frecuencia te ha molestado cada uno de los siguientes problemas?",
+  "autoevaluacionEstudianteEnviarRespuestas": "Enviar respuestas",
+  "autoevaluacionesBienestarNoHayResultadosEn": "No hay resultados en este filtro.",
+  "backupRestoreAdminNoSePudoGenerar": "No se pudo generar el backup.",
+  "backupRestoreAdminRestaurarBaseDeDatos": "⚠️ Restaurar base de datos",
+  "backupRestoreAdminVasARestaurarDesde": "Vas a restaurar desde el archivo \"{nombreArchivo}\".\n\nEsto BORRA todos los datos actuales (usuarios, citas, SOS, autoevaluaciones, todo) y los reemplaza por los del backup. Esta acción no se puede deshacer.",
+  "@backupRestoreAdminVasARestaurarDesde": {
+    "placeholders": {
+      "nombreArchivo": {
+        "type": "Object"
+      }
+    }
+  },
+  "backupRestoreAdminEntiendoContinuar": "Entiendo, continuar",
+  "backupRestoreAdminConfirmacionFinal": "Confirmación final",
+  "backupRestoreAdminEscribeRestaurarEnMayusculas": "Escribe RESTAURAR (en mayúsculas) para confirmar:",
+  "backupRestoreAdminRestaurarAhora": "Restaurar ahora",
+  "backupRestoreAdminBaseDeDatosRestaurada": "Base de datos restaurada correctamente.",
+  "backupRestoreAdminGenerarBackup": "Generar backup",
+  "backupRestoreAdminDescargaUnArchivoSql": "Descarga un archivo .sql con toda la información actual.",
+  "backupRestoreAdminRestaurarBackup": "Restaurar backup",
+  "backupRestoreAdminReemplazaTodosLosDatos": "Reemplaza TODOS los datos actuales por los de un archivo .sql.",
+  "backupRestoreAdminRecomendacionGeneraUnBackup": "Recomendación: genera un backup regularmente (por ejemplo, antes de cada entrega), y guárdalo en un lugar seguro fuera del computador (correo, USB, nube).",
+  "captchaWidgetOtraOperacion": "Otra operación",
+  "citasBienestarNoHayCitasEn": "No hay citas en este filtro.",
+  "citasEstudianteConfirmarCita": "Confirmar cita",
+  "citasEstudianteSolicitar": "Solicitar",
+  "citasEstudianteVasACancelarTu": "Vas a cancelar tu cita con {profesional} ({fechaHora}).",
+  "@citasEstudianteVasACancelarTu": {
+    "placeholders": {
+      "profesional": {
+        "type": "Object"
+      },
+      "fechaHora": {
+        "type": "Object"
+      }
+    }
+  },
+  "citasEstudianteAgendarCita": "Agendar cita",
+  "citasEstudianteNoHayHorariosLibres": "No hay horarios libres este día.",
+  "citasEstudianteMisCitas": "Mis citas",
+  "citasEstudianteAunNoTienesCitas": "Aún no tienes citas agendadas.",
+  "disponibilidadBienestarAgregarFranjaDeDisponibilidad": "Agregar franja de disponibilidad",
+  "disponibilidadBienestarMisFranjas": "Mis franjas",
+  "disponibilidadBienestarAunNoHasAgregado": "Aún no has agregado disponibilidad.",
+  "homeEstudianteModuloEnConstruccion": "{modulo} — módulo en construcción",
+  "@homeEstudianteModuloEnConstruccion": {
+    "placeholders": {
+      "modulo": {
+        "type": "Object"
+      }
+    }
+  },
+  "homeEstudianteHola": "Hola, {nombreEstudiante}",
+  "@homeEstudianteHola": {
+    "placeholders": {
+      "nombreEstudiante": {
+        "type": "Object"
+      }
+    }
+  },
+  "homeEstudianteCerrarSesion": "Cerrar sesión",
+  "homeEstudianteSolicitudPrioritariaSos": "Solicitud prioritaria (SOS)",
+  "homeEstudianteSiNecesitasAyudaUrgente": "Si necesitas ayuda urgente",
+  "homeEstudianteDiarioEmocional": "Diario emocional",
+  "homeEstudianteMiPerfil": "Mi perfil",
+  "homeStaffDashboard": "Dashboard",
+  "homeStaffUsuarios": "Usuarios",
+  "homeStaffConfiguracion": "Configuración",
+  "homeStaffSolicitudes": "Solicitudes",
+  "homeStaffAutoevaluaciones": "Autoevaluaciones",
+  "homeStaffAgenda": "Agenda",
+  "homeStaffReportes": "Reportes",
+  "homeStaffActualizar": "Actualizar",
+  "homeStaffEsteModuloEstaEn": "Este módulo está en construcción",
+  "inactivityGuardSesionBloqueadaPorInactividad": "Sesión bloqueada por inactividad",
+  "inactivityGuardDesbloquear": "Desbloquear",
+  "politicaPoliticaDeTratamientoDe": "Política de tratamiento de datos",
+  "politicaPoliticaDeTratamientoDe2": "POLÍTICA DE TRATAMIENTO DE DATOS PERSONALES — SEREO",
+  "politicaHeLeidoYAcepto": "He leído y acepto la política de tratamiento de datos personales.",
+  "politicaAceptarYContinuar": "Aceptar y continuar",
+  "registerCrearCuentaDeEstudiante": "Crear cuenta de estudiante",
+  "registerRegistrateConTuCorreo": "Regístrate con tu correo institucional",
+  "registerNombreCompleto": "Nombre completo",
+  "registerAnaMariaGomez": "Ana María Gómez",
+  "registerProgramaAcademico": "Programa académico",
+  "registerSeleccionaTuPrograma": "Selecciona tu programa",
+  "registerAdministracionDeEmpresas": "Administración de Empresas",
+  "registerContaduriaPublica": "Contaduría Pública",
+  "registerZootecnia": "Zootecnia",
+  "registerIngenieriaDeSistemasY": "Ingeniería de Sistemas y Computación",
+  "registerIngenieriaElectronica": "Ingeniería Electrónica",
+  "registerCienciasSociales": "Ciencias Sociales",
+  "registerEducacionFisica": "Educación Física",
+  "registerMinimo8Caracteres": "Mínimo 8 caracteres",
+  "registerConfirmarContrasena": "Confirmar contraseña",
+  "registerRepiteTuContrasena": "Repite tu contraseña",
+  "registerCrearCuenta": "Crear cuenta",
+  "reportesBienestarNoSePudoAbrir": "No se pudo abrir el reporte. Verifica tu conexión.",
+  "reportesBienestarExportarAExcelCsv": "Exportar a Excel (CSV)",
+  "reportesBienestarSeDescargaUnArchivo": "Se descarga un archivo que abre directamente en Excel, listo para filtrar y analizar.",
+  "reportesBienestarEstadisticasPorProgramaAcademico": "Estadísticas por programa académico",
+  "reportesBienestarSosCitasYAutoevaluaciones": "SOS, citas y autoevaluaciones agrupadas por carrera — el reporte más útil para identificar dónde hay mayor necesidad de acompañamiento.",
+  "reportesBienestarHistorialDeSolicitudesSos": "Historial de solicitudes SOS",
+  "reportesBienestarListadoCompletoConEstudiante": "Listado completo con estudiante, estado y fechas.",
+  "reportesBienestarHistorialDeCitas": "Historial de citas",
+  "reportesBienestarTodasLasCitasAgendadas": "Todas las citas agendadas, con su estado y profesional asignado.",
+  "reportesBienestarResumenEjecutivoPdf": "Resumen ejecutivo (PDF)",
+  "reportesBienestarSeAbreUnaPagina": "Se abre una página lista para imprimir o guardar como PDF (Ctrl+P), ideal para presentar en una reunión.",
+  "reportesBienestarResumenEjecutivoDeIndicadores": "Resumen ejecutivo de indicadores",
+  "reportesBienestarUnVistazoGeneralTotales": "Un vistazo general: totales, SOS pendientes, y promedio del PHQ-9 por programa.",
+  "sosBienestarNoHaySolicitudesEn": "No hay solicitudes en este filtro.",
+  "sosBienestarTomarCaso": "Tomar caso",
+  "sosEstudianteSolicitudEnviadaBienestarLa": "Solicitud enviada. Bienestar la atenderá pronto.",
+  "sosEstudianteSiEstasEnUna": "Si estás en una situación de crisis o riesgo inmediato, comunícate directamente con la línea de emergencias. Este formulario notifica a Bienestar, pero puede tardar unos minutos en ser leído.",
+  "sosEstudianteNuevaSolicitud": "Nueva solicitud",
+  "sosEstudianteQueNecesitasBreve": "¿Qué necesitas? (breve)",
+  "sosEstudianteTelefonoDeContactoOpcional": "Teléfono de contacto (opcional)",
+  "sosEstudianteEnviarSolicitud": "Enviar solicitud",
+  "sosEstudianteMisSolicitudesAnteriores": "Mis solicitudes anteriores",
+  "sosEstudianteAunNoHasEnviado": "Aún no has enviado ninguna solicitud.",
+  "usuariosAdminExportarAExcel": "Exportar a Excel",
+  "usuariosAdminNuevaCuenta": "Nueva cuenta",
+  "usuariosAdminNoHayUsuariosEn": "No hay usuarios en este filtro.",
+  "usuariosAdminContrasenaMin8Caracteres": "Contraseña (mín. 8 caracteres)",
+  "usuariosAdminRol": "Rol",
+  "usuariosAdminBienestar": "Bienestar",
+  "usuariosAdminAdmin": "Admin",
+  "usuariosAdminGuardar": "Guardar",
+  "agendaBienestarDisponibilidadFecha": "Disponibilidad - {fecha}",
+  "@agendaBienestarDisponibilidadFecha": {
+    "placeholders": {
+      "fecha": {
+        "type": "Object"
+      }
+    }
+  },
+  "agendaBienestarCitasFecha": "Citas - {fecha}",
+  "@agendaBienestarCitasFecha": {
+    "placeholders": {
+      "fecha": {
+        "type": "Object"
+      }
+    }
+  },
+  "agendaBienestarHoraDeInicio": "HORA DE INICIO",
+  "agendaBienestarHoraDeFin": "HORA DE FIN",
+  "filtroTodos": "Todos",
+  "nivelSevero": "Severo",
+  "nivelModSevero": "Mod. severo",
+  "nivelModerado": "Moderado",
+  "nivelLeve": "Leve",
+  "nivelMinimo": "Mínimo",
+  "filtroPendientes": "Pendientes",
+  "filtroConfirmadas": "Confirmadas",
+  "filtroReagendadas": "Reagendadas",
+  "filtroAtendidas": "Atendidas",
+  "filtroCanceladas": "Canceladas",
+  "filtroTodas": "Todas",
+  "citasEstudianteHorariosDisponiblesFecha": "Horarios disponibles - {fecha}",
+  "@citasEstudianteHorariosDisponiblesFecha": {
+    "placeholders": {
+      "fecha": {
+        "type": "Object"
+      }
+    }
+  },
+  "citasEstudiantePorAsignar": "Por asignar",
+  "citasEstudianteElProfesionalAsignado": "el profesional asignado",
+  "disponibilidadBienestarCompletaTodosLosCampos": "Completa fecha, hora inicio y hora fin.",
+  "disponibilidadBienestarElegirFecha": "Elegir fecha",
+  "disponibilidadBienestarHoraInicio": "Hora inicio",
+  "disponibilidadBienestarHoraFin": "Hora fin",
+  "disponibilidadBienestarActiva": "Activa",
+  "disponibilidadBienestarDesactivada": "Desactivada",
+  "temaClaro": "Tema claro",
+  "temaOscuro": "Tema oscuro",
+  "perfil": "Perfil",
+  "homeStaffSolicitudesPendientes": "Solicitudes pendientes",
+  "homeStaffCitasDeHoy": "Citas de hoy",
+  "homeStaffCitasEstaSemana": "Citas esta semana",
+  "homeStaffEstudiantes": "Estudiantes",
+  "homeStaffAdministradores": "Administradores",
+  "inactivityGuardSesionCerradaInactividad": "Se cerró tu sesión por inactividad.",
+  "inactivityGuardSesionOtroDispositivo": "Tu sesión fue cerrada porque iniciaste sesión con esta cuenta en otro dispositivo.",
+  "inactivityGuardNoSePudoVerificar": "No se pudo verificar la contraseña.",
+  "registerSeleccionaTuProgramaAcademico": "Selecciona tu programa académico.",
+  "filtroEnProceso": "En proceso",
+  "sosEstudianteNoSePudoCargar": "No se pudo cargar tu historial.",
+  "sosEstudianteCuentanosBrevemente": "Cuéntanos brevemente qué necesitas.",
+  "usuariosAdminEditarUsuario": "Editar usuario",
+  "opcionNunca": "Nunca",
+  "opcionVariosDias": "Varios días",
+  "opcionMasDeLaMitad": "Más de la mitad de los días",
+  "opcionCasiTodos": "Casi todos los días",
+  "nivelModeradamenteSevero": "Moderadamente severo",
+  "phq9Pregunta1": "Poco interés o placer en hacer las cosas",
+  "phq9Pregunta2": "Sentirse desanimado(a), deprimido(a) o sin esperanza",
+  "phq9Pregunta3": "Dificultad para dormir o permanecer dormido(a), o dormir demasiado",
+  "phq9Pregunta4": "Sentirse cansado(a) o tener poca energía",
+  "phq9Pregunta5": "Poco apetito o comer en exceso",
+  "phq9Pregunta6": "Sentirse mal consigo mismo(a), o sentir que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia",
+  "phq9Pregunta7": "Dificultad para concentrarse en cosas como leer el periódico o ver televisión",
+  "phq9Pregunta8": "Moverse o hablar tan lentamente que otras personas podrían notarlo, o lo contrario: estar tan inquieto(a) o agitado(a) que se ha estado moviendo mucho más de lo normal",
+  "phq9Pregunta9": "Pensamientos de que estaría mejor muerto(a) o de hacerse daño de alguna manera",
+  "citasEstudianteVasASolicitar": "Vas a solicitar una cita con {profesional}\n{fecha} a las {hora}.\n\nBienestar deberá confirmarla.",
+  "@citasEstudianteVasASolicitar": {
+    "placeholders": {
+      "profesional": {
+        "type": "Object"
+      },
+      "fecha": {
+        "type": "Object"
+      },
+      "hora": {
+        "type": "Object"
+      }
+    }
+  },
+  "estadoPendiente": "Pendiente",
+  "estadoEnProceso": "En proceso",
+  "estadoConfirmada": "Confirmada",
+  "estadoReagendada": "Reagendada",
+  "estadoAtendida": "Atendida",
+  "estadoCancelada": "Cancelada",
+  "calendarioMes": "Mes",
+  "calendarioDosSemanas": "2 semanas",
+  "calendarioSemana": "Semana",
+  "citaFecha": "Fecha: {fecha}",
+  "@citaFecha": {
+    "placeholders": {
+      "fecha": {
+        "type": "Object"
+      }
+    }
+  },
+  "citaMotivo": "Motivo: {motivo}",
+  "@citaMotivo": {
+    "placeholders": {
+      "motivo": {
+        "type": "Object"
+      }
+    }
+  },
+  "sosTelefono": "Tel: {telefono}",
+  "@sosTelefono": {
+    "placeholders": {
+      "telefono": {
+        "type": "Object"
+      }
+    }
+  },
+  "politicaSeccion1Titulo": "1. Responsable del tratamiento",
+  "politicaSeccion1Texto": "SEREO es una plataforma desarrollada para el área de Bienestar Universitario de la Universidad de Cundinamarca, orientada al acompañamiento psicológico y emocional de su comunidad estudiantil. El área de Bienestar Universitario actúa como responsable del tratamiento de los datos personales recolectados a través de esta aplicación.",
+  "politicaSeccion2Titulo": "2. Datos que se recolectan",
+  "politicaSeccion2Texto": "• Datos de identificación: nombre completo, correo institucional, programa académico.\n• Credenciales de acceso: contraseña (almacenada de forma cifrada).\n• Datos sensibles de salud mental: solicitudes de atención prioritaria (SOS), diario emocional, autoevaluaciones psicológicas, e historial de citas con profesionales de Bienestar.\n• Datos técnicos: preferencias de la aplicación y datos de sesión.",
+  "politicaSeccion3Titulo": "3. Finalidad del tratamiento",
+  "politicaSeccion3Texto": "Verificar tu identidad y pertenencia a la comunidad universitaria, gestionar solicitudes de atención psicológica y citas, permitir el seguimiento de tu bienestar emocional por parte de profesionales autorizados, y generar estadísticas agregadas y anónimas para apoyar decisiones institucionales.",
+  "politicaSeccion4Titulo": "4. Confidencialidad de la información sensible",
+  "politicaSeccion4Texto": "La información relacionada con tu estado emocional (diario, autoevaluaciones, solicitudes SOS) es confidencial. Solo el personal de Bienestar autorizado tiene acceso, y únicamente en el contexto necesario para brindarte atención. El personal administrativo del sistema NO tiene acceso a esta información bajo ninguna circunstancia.",
+  "politicaSeccion5Titulo": "5. Conservación de la información",
+  "politicaSeccion5Texto": "La información no se elimina de forma permanente. Las solicitudes, citas y cuentas pueden cancelarse o desactivarse, pero se conservan con fines de trazabilidad, auditoría y continuidad del acompañamiento.",
+  "politicaSeccion6Titulo": "6. Tus derechos",
+  "politicaSeccion6Texto": "Tienes derecho a conocer, actualizar y rectificar tus datos; ser informado sobre su uso; presentar quejas ante las autoridades competentes; y revocar tu autorización o solicitar la supresión de tus datos, cuando no exista un deber legal que lo impida.",
+  "politicaSeccion7Titulo": "7. Uso de almacenamiento local",
+  "politicaSeccion7Texto": "SEREO utiliza almacenamiento local en tu dispositivo (similar a las cookies en aplicaciones web) para mantener tu sesión activa y recordar tus preferencias, como el tema visual. Esta información permanece únicamente en tu dispositivo.",
+  "politicaSeccion8Titulo": "8. Aceptación",
+  "politicaSeccion8Texto": "El uso de SEREO requiere la aceptación expresa de esta política, de acuerdo con la Ley 1581 de 2012 y sus decretos reglamentarios.",
+  "passwordHintMin10": "Mínimo 10 caracteres",
+  "passwordReqTitle": "Tu contraseña debe tener:",
+  "passwordReqLength": "Al menos 10 caracteres",
+  "passwordReqUpper": "Una letra mayúscula",
+  "passwordReqLower": "Una letra minúscula",
+  "passwordReqNumber": "Un número",
+  "passwordReqSpecial": "Un carácter especial (por ejemplo ! @ # %)",
+  "passwordPolicyError": "La contraseña no cumple los requisitos de seguridad.",
+  "passwordErrPersonal": "No puede contener tu nombre ni parte de tu correo.",
+  "passwordErrCommon": "Es una contraseña demasiado común.",
+  "perfilDatosBasicos": "Datos básicos",
+  "perfilSemestre": "Semestre",
+  "perfilTelefono": "Teléfono",
+  "perfilOpcional": "(opcional)",
+  "perfilContactoEmergencia": "Contacto de emergencia",
+  "perfilContactoNombre": "Nombre del contacto",
+  "perfilContactoTelefono": "Teléfono del contacto",
+  "perfilGuardarCambios": "Guardar cambios",
+  "perfilGuardado": "Perfil actualizado",
+  "perfilSeguridad": "Seguridad",
+  "perfilCambiarContrasena": "Cambiar contraseña",
+  "perfilContrasenaActual": "Contraseña actual",
+  "perfilContrasenaNueva": "Nueva contraseña",
+  "perfilConfirmarNueva": "Confirmar nueva contraseña",
+  "perfilContrasenaCambiada": "Contraseña actualizada correctamente",
+  "perfilPoliticaAceptada": "Política de datos aceptada el {fecha}",
+  "@perfilPoliticaAceptada": {
+    "placeholders": {
+      "fecha": {
+        "type": "String"
+      }
+    }
+  },
+  "perfilErrNombre": "Escribe tu nombre completo (mínimo 3 caracteres).",
+  "perfilErrPrograma": "Selecciona un programa académico válido.",
+  "perfilErrSemestre": "El semestre debe estar entre 1 y 12.",
+  "perfilErrTelefono": "Escribe un teléfono válido (de 7 a 15 dígitos).",
+  "perfilErrContactoIncompleto": "Completa el nombre y el teléfono del contacto de emergencia.",
+  "perfilErrContactoNombre": "El nombre del contacto no es válido.",
+  "perfilErrContrasenaActual": "La contraseña actual no es correcta.",
+  "perfilErrNoCoinciden": "Las contraseñas no coinciden.",
+  "perfilErrIgualActual": "La nueva contraseña debe ser distinta de la actual.",
+  "perfilErrSesion": "Tu sesión no es válida. Vuelve a iniciar sesión."
+}

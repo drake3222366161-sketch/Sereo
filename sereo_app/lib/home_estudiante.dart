@@ -1,8 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'theme.dart';
 import 'login_screen.dart';
 import 'sos_estudiante.dart';
 import 'citas_estudiante.dart';
+import 'autoevaluacion_estudiante.dart';
+import 'api_config.dart';
+import 'package:sereo_app/l10n_ext.dart';
+import 'language_button.dart';
+import 'inactivity_guard.dart';
+import 'perfil_screen.dart';
 
 class HomeEstudiante extends StatelessWidget {
   final int estudianteId;
@@ -18,11 +26,25 @@ class HomeEstudiante extends StatelessWidget {
 
   void _proximamente(BuildContext context, String modulo) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$modulo — módulo en construcción')),
+      SnackBar(content: Text(context.t.homeEstudianteModuloEnConstruccion(modulo))),
     );
   }
 
-  void _cerrarSesion(BuildContext context) {
+  Future<void> _cerrarSesion(BuildContext context) async {
+    // Liberamos el token en el backend (no es estrictamente necesario, ya
+    // que un login nuevo lo sobrescribe de todas formas, pero así queda
+    // explícito que "nadie" tiene sesión activa hasta el próximo login).
+    try {
+      await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/cerrar_sesion.php'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'usuario_id': estudianteId}),
+      );
+    } catch (e) {
+      // si falla por conexión, igual dejamos salir a la persona
+    }
+
+    if (!context.mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const LoginScreen()),
       (route) => false,
@@ -62,7 +84,7 @@ class HomeEstudiante extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Hola, $nombreEstudiante',
+                        Text(context.t.homeEstudianteHola(nombreEstudiante),
                             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
                         if (programaAcademico != null)
                           Text(programaAcademico!,
@@ -70,18 +92,19 @@ class HomeEstudiante extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const LanguageButton(),
                   ValueListenableBuilder<ThemeMode>(
                     valueListenable: temaActual,
                     builder: (context, modo, _) {
                       return IconButton(
-                        tooltip: modo == ThemeMode.dark ? 'Tema claro' : 'Tema oscuro',
+                        tooltip: modo == ThemeMode.dark ? context.t.temaClaro : context.t.temaOscuro,
                         icon: Icon(modo == ThemeMode.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
                         onPressed: alternarTema,
                       );
                     },
                   ),
                   IconButton(
-                    tooltip: 'Cerrar sesión',
+                    tooltip: context.t.homeEstudianteCerrarSesion,
                     icon: const Icon(Icons.logout, color: textoSecundario),
                     onPressed: () => _cerrarSesion(context),
                   ),
@@ -95,24 +118,26 @@ class HomeEstudiante extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.errorContainer,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(10),
+                    border: Border(left: BorderSide(color: colorSos, width: 4)),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.warning_amber_rounded, color: Theme.of(context).colorScheme.onErrorContainer),
+                      Icon(Icons.warning_amber_rounded, color: colorSos),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Solicitud prioritaria (SOS)',
+                            Text(context.t.homeEstudianteSolicitudPrioritariaSos,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: Theme.of(context).colorScheme.onErrorContainer)),
-                            Text('Si necesitas ayuda urgente',
+                                    color: Theme.of(context).colorScheme.onSurface)),
+                            Text(context.t.homeEstudianteSiNecesitasAyudaUrgente,
                                 style: TextStyle(
-                                    fontSize: 12, color: Theme.of(context).colorScheme.onErrorContainer)),
+                                    fontSize: 12,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant)),
                           ],
                         ),
                       ),
@@ -131,12 +156,18 @@ class HomeEstudiante extends StatelessWidget {
                   children: [
                     _TarjetaModulo(
                       icono: Icons.checklist_rtl,
-                      titulo: 'Autoevaluación',
-                      onTap: () => _proximamente(context, 'Autoevaluación'),
+                      titulo: context.t.autoevaluacionEstudianteAutoevaluacion,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => AutoevaluacionEstudianteScreen(estudianteId: estudianteId),
+                          ),
+                        );
+                      },
                     ),
                     _TarjetaModulo(
                       icono: Icons.calendar_month_outlined,
-                      titulo: 'Mis citas',
+                      titulo: context.t.citasEstudianteMisCitas,
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -147,13 +178,22 @@ class HomeEstudiante extends StatelessWidget {
                     ),
                     _TarjetaModulo(
                       icono: Icons.menu_book_outlined,
-                      titulo: 'Diario emocional',
-                      onTap: () => _proximamente(context, 'Diario emocional'),
+                      titulo: context.t.homeEstudianteDiarioEmocional,
+                      onTap: () => _proximamente(context, context.t.homeEstudianteDiarioEmocional),
                     ),
                     _TarjetaModulo(
                       icono: Icons.account_circle_outlined,
-                      titulo: 'Mi perfil',
-                      onTap: () => _proximamente(context, 'Perfil'),
+                      titulo: context.t.homeEstudianteMiPerfil,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PerfilEstudianteScreen(
+                              estudianteId: estudianteId,
+                              tokenSesion: SesionActual.of(context).tokenSesion,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -181,9 +221,6 @@ class _TarjetaModulo extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: Container(
         decoration: BoxDecoration(
-          // Antes esto era 'Colors.white' fijo - en modo oscuro se veía
-          // como un cuadro blanco encima de un fondo oscuro. Usando el
-          // color que el propio tema define, se adapta automáticamente.
           color: colores.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: colores.outlineVariant),
