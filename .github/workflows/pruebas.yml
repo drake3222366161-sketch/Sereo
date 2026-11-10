@@ -38,4 +38,19 @@ jobs:
 
       - name: Correr PHPUnit
         run: vendor/bin/phpunit
-        working-directory: backend        
+        working-directory: backend      
+          
+  composer-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Revisar vulnerabilidades en las librerías
+        run: composer audit
+        working-directory: backend
