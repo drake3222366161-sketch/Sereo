@@ -39,7 +39,7 @@ jobs:
       - name: Correr PHPUnit
         run: vendor/bin/phpunit
         working-directory: backend      
-          
+
   composer-audit:
     runs-on: ubuntu-latest
     steps:
@@ -52,5 +52,5 @@ jobs:
           php-version: '8.2'
 
       - name: Revisar vulnerabilidades en las librerías
-        run: composer audit
+        run: composer audit --locked
         working-directory: backend
